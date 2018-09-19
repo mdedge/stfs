@@ -2,6 +2,12 @@
 #This script defines functions used in the main text or exercises of
 #Statistical Thinking from Scratch.
 
+#To run this script, loading all packages and defining all functions used in the book, 
+#install and load the devtools package and use the source_url() function, like so:
+#if(!("devtools" %in% installed.packages())){install.packages("devtools")}
+#library(devtools)
+#source_url("https://raw.githubusercontent.com/mdedge/from-scratch/master/R_functions.R")
+
 #Install (if necessary) and load all packages used in the book's code.
 if(!("gpairs" %in% installed.packages())){install.packages("gpairs")}
 if(!("quantreg" %in% installed.packages())){install.packages("quantreg")}
