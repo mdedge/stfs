@@ -9,24 +9,24 @@
 #source_url("https://raw.githubusercontent.com/mdedge/from-scratch/master/R_functions.R")
 
 #Install (if necessary) and load all packages used in the book's code.
-if(!("gpairs" %in% installed.packages())){install.packages("gpairs")}
-if(!("quantreg" %in% installed.packages())){install.packages("quantreg")}
 if(!("animation" %in% installed.packages())){install.packages("animation")}
+if(!("car" %in% installed.packages())){install.packages("car")}
+if(!("coda" %in% installed.packages())){install.packages("coda")}
+if(!("devtools" %in% installed.packages())){install.packages("devtools")}
+if(!("gpairs" %in% installed.packages())){install.packages("gpairs")}
+if(!("gvlma" %in% installed.packages())){install.packages("gvlma")}
 if(!("MASS" %in% installed.packages())){install.packages("MASS")}
 if(!("MCMCpack" %in% installed.packages())){install.packages("MCMCpack")}
-if(!("coda" %in% installed.packages())){install.packages("coda")}
-if(!("gvlma" %in% installed.packages())){install.packages("gvlma")}
-if(!("car" %in% installed.packages())){install.packages("car")}
-if(!("devtools" %in% installed.packages())){install.packages("devtools")}
-library(gpairs) 
-library(quantreg)
+if(!("quantreg" %in% installed.packages())){install.packages("quantreg")}
 library(animation)
+library(car)
+library(coda)
+library(devtools)
+library(gpairs)
+library(gvlma)
 library(MASS)
 library(MCMCpack)
-library(coda)
-library(gvlma)
-library(car)
-library(devtools)
+library(quantreg)
 
 #Function that simulates a specified number of samples of a specified
 #size from the beta distribution and plots the distribution of 
@@ -43,8 +43,8 @@ dosm.beta.hist <- function(samp.size, n.samps, shape1 = 1, shape2 = 1, ...){
 
 #Functions to simulate data from Pareto distribution.
 #You can also get these from the rmutil package.
-qpareto <- function(u, a=0.5, b=1){b/(1-u)^(1/a)}
 rpareto <- function(n, a=0.5, b=1){qpareto(runif(n),a,b)}
+qpareto <- function(u, a=0.5, b=1){b/(1-u)^(1/a)}
 
 #Compares proportion of observed sample means beyond 
 #k deviations(numerator) with probability of being beyond k
@@ -73,14 +73,12 @@ sim.lm <- function(a, b, var.eps = 1, n = 50, mu.x = 8, var.x = 4, rx = rnorm, r
   cbind(x,y)
 }
 
-
 #Draw nsamps samples of size n from a normal distribution with
 #expectation mu and standard deviation sigma.
 norm.samps <- function(mu = 0, sigma = 1, n = 25, nsamps = 10000){
   samps <- rnorm(n*nsamps, mu, sigma)
   matrix(samps, nrow = nsamps, ncol = n)
 }
-
 
 #function to draw a sample of size n from a Laplace distribution
 #with expectation equal to the parameter mean and standard deviation equal
@@ -104,7 +102,7 @@ laplace.samps <- function(mu = 0, sigma = 1, n = 25, nsamps = 10000){
 #nsamps is the number of samples to draw, 
 #n is the number of observations in each sample, 
 #gamma is the probability that each observation is 
-###from the non-target distribution, 
+#from the non-target distribution, 
 #theta is the #parameter to be estimated, and 
 #lambda is the expectation of the #non-target distribution. 
 #Each column in the output matrix is a sample of size n.
@@ -146,25 +144,11 @@ rnorm.mix <- function(n, mean = 0, sd = 1, contam.p = 0.01, contam.mean = -5, co
 #to follow a normal distirbution, a hypothesized expectation (mu),
 #and a standard error (stand.err), computes a two-tailed p value.
 #of the null hypothesis that the expectation is mu.
-twotailed.p.normal <- function(x.bar, mu, stand.err){
-  abs.diff <- abs(x.bar - mu)
-  2 * pnorm(mu - abs.diff, mean = mu, sd = stand.err)
-}
+#twotailed.p.normal <- function(x.bar, mu, stand.err){
+#  abs.diff <- abs(x.bar - mu)
+#  2 * pnorm(mu - abs.diff, mean = mu, sd = stand.err)
+#}
 
-
-#A function for computing a p-value comparing the means
-#of two groups whose scores are entered in a vector.
-#Assumes an input vector with an even number of entries,
-#the first half of which are in one group, with the second
-#half in a different group..
-t.p <- function(x){
-  n.tot <- length(x)
-  n.1 <- n.tot/2
-  x1 <- x[1:n.1]
-  x2 <- x[(n.1+1):n.tot]
-  t.st <- (mean(x1) - mean(x2))/sqrt((sd(x1)^2 + sd(x2)^2)/n.1)
-  2*pt(-abs(t.st), n.tot - 2)
-}
 
 #Function for simulating multiple testing on n.meas measurements,
 #for a test comparing two group means.
@@ -174,6 +158,19 @@ t.p <- function(x){
 #between distinct measurements, and n.sims is the
 #number of simulations to run.
 many.outcome.sim <- function(n, level, n.meas, correl, n.sims){
+  #A function for computing a p-value comparing the means
+  #of two groups whose scores are entered in a vector.
+  #Assumes an input vector with an even number of entries,
+  #the first half of which are in one group, with the second
+  #half in a different group..
+  t.p <- function(x){
+    n.tot <- length(x)
+    n.1 <- n.tot/2
+    x1 <- x[1:n.1]
+    x2 <- x[(n.1+1):n.tot]
+    t.st <- (mean(x1) - mean(x2))/sqrt((sd(x1)^2 + sd(x2)^2)/n.1)
+    2*pt(-abs(t.st), n.tot - 2)
+  }
   #Specify a covariance matrix for mvrnorm().
   sigma <- matrix(correl, nrow = n.meas, ncol = n.meas)
   diag(sigma) <- 1
@@ -195,6 +192,19 @@ many.outcome.sim <- function(n, level, n.meas, correl, n.sims){
 #group at each test, level is the significance level of 
 #the test and n.sims is the number of simulations to run.
 serial.testing.sim <- function(ns = c(20, 30, 40, 50), n.sims = 10000){
+  #A function for computing a p-value comparing the means
+  #of two groups whose scores are entered in a vector.
+  #Assumes an input vector with an even number of entries,
+  #the first half of which are in one group, with the second
+  #half in a different group..
+  t.p <- function(x){
+    n.tot <- length(x)
+    n.1 <- n.tot/2
+    x1 <- x[1:n.1]
+    x2 <- x[(n.1+1):n.tot]
+    t.st <- (mean(x1) - mean(x2))/sqrt((sd(x1)^2 + sd(x2)^2)/n.1)
+    2*pt(-abs(t.st), n.tot - 2)
+  }
   #Initialize a matrix for holding p values.
   sim.ps <- matrix(-9, nrow = n.sims, ncol = length(ns))
   #simulate all the necessary observations.
@@ -224,8 +234,8 @@ ps.1sz <- function(d, n, level = 0.05, nsim = 10000){
   mean(ps < level)
 }
 
-
-#Draw a bootstrap sample of entries from a vector or rows #from a matrix.
+#Draw a bootstrap sample of entries from a vector or rows 
+#from a matrix.
 boot.samp <- function(x){
   #If x is a vector, convert it to a matrix with one column.
   if(is.null(dim(x))){
@@ -239,7 +249,7 @@ boot.samp <- function(x){
 #Compute the method of moments estimator of the slope 
 #for simple linear regression. (that is, the least-squares
 #slope. You can also get this with 
-#lm(y ~ x)$coefficients[2].)
+#lm(y ~ x)$coefficients[2], but beta.mm() is a little faster.)
 #(equation 8.3).
 beta.mm <- function(x, y){
   n <- length(x)
@@ -247,21 +257,9 @@ beta.mm <- function(x, y){
     (sum(x^2) - (1/n)*sum(x)^2)
 }
 
-
 #Permute the columns of a matrix x independently.
 perm.samp <- function(x){
   apply(x, 2, sample)
-}
-
-#Function that returns the mean plug-in variance estimate from nsamps
-#normal(0,1) samples, each of size n.
-normsamp.meanpluginvar.sims <- function(n, nsamps = 10000){
-  x <- rnorm(nsamps*n,0,1)
-  samps <- matrix(x, nrow = nsamps, ncol = n)
-  var.pi <- function(vec){
-    sum((vec-mean(vec))^2)/length(vec)
-  }
-  mean(apply(samps, 1, var.pi))
 }
 
 #function for simulating data under a linear model where y is a 
@@ -330,59 +328,20 @@ sim.perm.B <- function(a, b, n.perm = 500, n.sim = 500, var.eps = 1,
   ps
 }
 
-#A somewhat faster (about twice as fast) version of sim.perm.B
-#This version is harder to read / understand.
-sim.perm.B.faster <- function(a, b, n.perm = 500, n.sim = 500, var.eps = 1, 
-                              n = 50, mu.x = 8, var.x = 4, rdist = rnorm, rx = rnorm){
-  #simulate all data
-  dat <- sim.lm(a, b, var.eps, n*n.sim, mu.x, var.x, rdist = rdist, rx = rx)[sample(1:(n*n.sim)),]
-  #reorganize for beta.mm.vec
-  xs <- matrix(dat[,1], nrow = n)
-  ys <- matrix(dat[,2], nrow = n)
-  dat.all <- rbind(xs, ys)
-  #compute all the beta estimates
-  beta.mm.vec <- function(z){
-    n <- length(z)/2
-    x <- z[1:n]
-    y <- z[(n+1):(2*n)]
-    (sum(x*y) - (1/n)*sum(x)*sum(y)) / 
-      (sum(x^2) - (1/n)*sum(x)^2)
-  }
-  betas <- apply(dat.all, 2, beta.mm.vec)
-  #for each permutation, permute the y values and recompute
-  #beta estimates
-  perm.second.half <- function(x){
-    n <- length(x)/2
-    c(x[1:n], sample(x[(n+1):(2*n)]))
-  }
-  perm.dists <- matrix(nrow = n.perm, ncol = n.sim)
-  for(i in 1:n.perm){
-    perm.all <- apply(dat.all, 2, perm.second.half)
-    perm.dists[i,] <- apply(perm.all, 2, beta.mm.vec)
-  }
-  #compare the betas to their permutation distributions to
-  #arrive at p values.
-  getp <- function(x){
-    mean(abs(x[2:length(x)]) > abs(x[1]))
-  }
-  apply(rbind(matrix(betas, nrow = 1), perm.dists), 2, getp)
-}
-
 
 #Function to compute Wald statistic for slope in simple
 #linear regression.
-wald.stat.slr <- function(x, y, B0 = 0){
-  n <- length(x)
-  #compute MLEs of beta and alpha
-  B.hat <- (sum(x*y)-sum(x)*sum(y)/n)/( sum(x^2) - sum(x)^2/n)
-  A.hat <- (sum(y) - B.hat*sum(x))/n
-  #Compute estimated variance of MLE of beta
-  vhat.dists <- sum((y - A.hat - B.hat*x)^2)/(n-2)
-  vhat.Bhat <- vhat.dists/sum((x - mean(x))^2)
-  #Wald statistic
-  wald <- (B.hat - B0)/sqrt(vhat.Bhat)
-  return(wald)
-}
+#wald.stat.slr <- function(x, y, B0 = 0){
+#  n <- length(x)
+#  #compute MLEs of beta and alpha
+#  B.hat <- (sum(x*y)-sum(x)*sum(y)/n)/( sum(x^2) - sum(x)^2/n)
+#  A.hat <- (sum(y) - B.hat*sum(x))/n
+#  #Compute estimated variance of MLE of beta
+#  vhat.dists <- sum((y - A.hat - B.hat*x)^2)/(n-2)
+#  vhat.Bhat <- vhat.dists/sum((x - mean(x))^2)
+#  #Wald statistic
+#  (B.hat - B0)/sqrt(vhat.Bhat)
+#}
 
 #A function that calls sim.lm to simulate datasets, conducting a Wald test
 #of the hypothesis of zero slope for each one and returning the p values.
@@ -419,53 +378,47 @@ sim.Wald.B <- function(a, b, B0 = 0, n.sim = 1000, var.eps = 1, n = 50,
 #Compute the likelihood-ratio statistic comparing a simple linear regression
 #with and without a slope. x is the independent variable, y the
 #dependent variable.
-lr.stat.slr <- function(x, y){
-  n <- length(x)
-  #compute MLEs of beta and alpha
-  B.hat <- (sum(x*y)-sum(x)*sum(y)/n)/( sum(x^2) - sum(x)^2/n)
-  A.hat <- (sum(y) - B.hat*sum(x))/n
-  #Compute estimated variance of MLE of beta
-  vhat <- sum((y - A.hat - B.hat*x)^2)/(n-2)
-  #likelihood-ratio statistic
-  lr <- (sum((y - mean(y))^2) - sum((y - A.hat - B.hat*x)^2)) /vhat
-  return(lr)
-}
+#lr.stat.slr <- function(x, y){
+#  n <- length(x)
+#  #compute MLEs of beta and alpha
+#  B.hat <- (sum(x*y)-sum(x)*sum(y)/n)/( sum(x^2) - sum(x)^2/n)
+#  A.hat <- (sum(y) - B.hat*sum(x))/n
+#  #Compute estimated variance of MLE of beta
+#  vhat <- sum((y - A.hat - B.hat*x)^2)/(n-2)
+#  #likelihood-ratio statistic
+#  (sum((y - mean(y))^2) - sum((y - A.hat - B.hat*x)^2)) /vhat
+#}
 
 
-#Compute posterior expectation for the first parameter 
+#Compute conjugate posterior expectation and variance for the first parameter 
 #of a normal distribution with known standard deviation
-#using a normal prior. z is a vector of data. (equation 10.4)
-post.exp.norm.norm <- function(z, known.sd, prior.mean, prior.sd){
+#using a normal prior. z is a vector of data. (equation 10.4-10.5)
+post.conj.norm.norm <- function(z, known.sd, prior.mean, prior.sd){
   xbar <- mean(z)
-  (prior.mean / prior.sd^2 + xbar*length(z) / 
+  post.expec <- (prior.mean / prior.sd^2 + xbar*length(z) / 
     known.sd^2)/(1 /   prior.sd^2 + length(z) / known.sd^2)
+  post.var <- 1 / (1 /   prior.sd^2 + length(z) / known.sd^2)
+  list("posterior.expectation" = post.expec, "posterior.variance" = post.var)
 }
 
-#Compute posterior variance for the first parameter 
-#of a normal distribution with known standard deviation
-#using a normal prior. z is a vector of data. (equation 10.5)
-post.var.norm.norm <- function(z, known.sd, prior.mean, prior.sd){
-  1 / (1 /   prior.sd^2 + length(z) / known.sd^2)
-}
-
-#Get 1 sample under rejection sampling from normal with known sd.
-#Prior is a normal.
-#z is a vector of data.
-get.1.samp.norm <- function(z, known.sd = 1, prior.mn = 0, prior.sd = 1){
-  accepted <- FALSE
-  max.like <- exp(sum(log(dnorm(z, mean = mean(z), sd = known.sd))))
-  while(accepted == FALSE){
-    cand <- rnorm(1, prior.mn, prior.sd)
-    like <- exp(sum(log(dnorm(z, mean = cand, sd = known.sd))))
-    crit <- like / max.like
-    xunif <- runif(1,0,1)
-    if(xunif <= crit){accepted <- TRUE}
-  }
-  cand
-}
 
 #Wrapper for get.1.samp.norm() that gets rejection sample of desired size from posterior.
 reject.samp.norm <- function(z, known.sd = 1, prior.mn = 0, prior.sd = 1, nsamps = 10000){
+  #Get 1 sample under rejection sampling from normal with known sd.
+  #Prior is a normal.
+  #z is a vector of data.
+  get.1.samp.norm <- function(z, known.sd = 1, prior.mn = 0, prior.sd = 1){
+    accepted <- FALSE
+    max.like <- exp(sum(log(dnorm(z, mean = mean(z), sd = known.sd))))
+    while(accepted == FALSE){
+      cand <- rnorm(1, prior.mn, prior.sd)
+      like <- exp(sum(log(dnorm(z, mean = cand, sd = known.sd))))
+      crit <- like / max.like
+      xunif <- runif(1,0,1)
+      if(xunif <= crit){accepted <- TRUE}
+    }
+    cand
+  }
   samps <- numeric(nsamps)
   for(i in seq_along(samps)){
     samps[i] <- get.1.samp.norm(z, known.sd, prior.mn, prior.sd)
