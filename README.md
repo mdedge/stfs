@@ -5,13 +5,13 @@ Each chapter's folder contains supplemental material for that chapter, including
 
 Additionally, the R functions used in the book are available in the R functions directory. These functions can also be installed via the book's companion R package, stfspack. To install and load stfspack, use
 
-'''
+```
 if(!("devtools" %in% installed.packages())){install.packages("devtools")}
 library(devtools) 
 #Next, install and load the package.
 if(!("stfspack" %in% installed.packages())){install_github("mdedge/stfspack")}
 library(stfspack)
-'''
+```
 
 You only need to install the package once. After restarting R, re-load the package with library(stfspack).
 
