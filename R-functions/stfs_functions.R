@@ -325,7 +325,7 @@ sim.2var <- function(n, nsims, alpha, beta, gamma, d.sd, rho){
   y <- alpha + beta * x + gamma * z + disturb
   xmat <- matrix(x, nrow = nsims)
   ymat <- matrix(y, nrow = nsims)
-  cbind(xmat, ymat)
+  list(xmat, ymat)
 }
 
 
