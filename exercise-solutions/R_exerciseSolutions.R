@@ -64,6 +64,17 @@ if(!("gpairs" %in% installed.packages())){
 library(gpairs) #load the package
 gpairs(iris, scatter.pars = list(col = as.numeric(iris$Species)))
 
+
+#Problem 3
+
+#To install and load stfspack, use
+install.packages("devtools")
+library(devtools) 
+#Next, install and load the package.
+install_github("mdedge/stfspack")
+library(stfspack)
+
+
 ########################
 ########################
 ########################
@@ -214,7 +225,7 @@ for(i in x){
 #random samples of X on the x-axis up to the cumulative distribution function. 
 #Once it hits the cumulative distribution function, it turns left until it hits 
 #the vertical axis. Notice that the positions where the lines hit the x-axis are 
-#centered on zero, symmetric, and concentrated near the middle—they look like a 
+#centered on zero, symmetric, and concentrated near the middleâ€”they look like a 
 #normal distribution. Entering hist(x) will confirm the suspicion. In contrast, 
 #the lines hit the y-axis with roughly uniform density from zero to one. 
 hist(pnorm(x)) 
@@ -357,7 +368,7 @@ dosm.beta.hist(50, 10000, shape1 = s.pars[1], shape2 =  s.pars[2])
 #With the parameters and sample size requested, the distribution of sample means 
 #is a good fit to the normal only within about 2 standard deviations of the 
 #expectation. Beyond that, the Pareto sample mean distribution has much heavier 
-#tails than the normal—extreme observations are much more likely than normal 
+#tails than the normalâ€”extreme observations are much more likely than normal 
 #theory predicts. For example, there are about 100 times as many observations 
 #beyond 5 standard deviations from the expectation as would be predicted by the 
 #normal distribution, and there are thousands of times as many observations 
@@ -449,7 +460,7 @@ for(i in 1:10000){
 #each sample, and you can also take their mean. The mean of the 
 #sample means will approach the expectation of the sample mean 
 #by the law of large numbers. The median does too, but the 
-#law of large numbers doesn’t tell us that.
+#law of large numbers doesnâ€™t tell us that.
 
 hist(ests.mean)
 hist(ests.median)
@@ -457,8 +468,8 @@ mean(ests.mean)
 mean(ests.median)
 
 #You should see that the histogram of the sample median is 
-#centered around theta—in this case, set to 0 by the norm.samps() 
-#call—and that the mean of the sample medians is very close to 
+#centered around thetaâ€”in this case, set to 0 by the norm.samps() 
+#callâ€”and that the mean of the sample medians is very close to 
 #zero. Repeating the procedure gives similar results. The 
 #results correctly suggest that the sample median is an 
 #unbiased estimate of theta when the data are independent samples 
@@ -575,7 +586,7 @@ for(i in 1:length(n)){
 plot(n, re, xlab = "sample size", ylab = "RE of sample mean vs. median for normal data")
 
 #When I run this code, the relative efficiency appears to level off 
-#between 1.5 and 1.6. This agrees with theoretical results—a little math 
+#between 1.5 and 1.6. This agrees with theoretical resultsâ€”a little math 
 #(beyond our scope) shows that the true asymptotic relative efficiency 
 #is pi/2 ~= 1.57.
 
@@ -668,9 +679,9 @@ mean(abs(ests.median))
 #still larger than the risk for the sample mean. Note that though 
 #the risk of the mean and median are larger and more similar with 
 #absolute error loss than with squared-error loss, absolute error 
-#loss and squared error loss are in different units—original units 
+#loss and squared error loss are in different unitsâ€”original units 
 #vs. squared units. Thus, the fact that the risks are larger and 
-#more similar isn’t necessarily meaningful.
+#more similar isnâ€™t necessarily meaningful.
   
 #c) After running the code in parts (a) and (b), assuming that you 
 #set mu=0, the approximate risk is given by
@@ -726,7 +737,7 @@ hist(medians)
 #is much less affected by the aberrant observations than the mean is. 
 #When gamma is small, the median is almost unaffected. 
 
-#This exercise demonstrates the median’s robustness against 
+#This exercise demonstrates the medianâ€™s robustness against 
 #outliers. 
 
 
@@ -779,7 +790,7 @@ apply(ests, 2, var)
 
 #c) In this scenario (normally distributed disturbances of constant 
 #variance), the least-squares estimators are more efficient than the 
-#least-absolute-errors estimators—both sets of estimators appear 
+#least-absolute-errors estimatorsâ€”both sets of estimators appear 
 #close to unbiased in the simulations (and they are in fact unbiased), 
 #and the variances of the least-squares estimators are smaller at 
 #each sample size.
@@ -822,7 +833,7 @@ apply(ests, 2, var)
 
 #Both sets of estimators appear to be approximately unbiased, and the simulations 
 #suggest that they may be consistent. However, the relative efficiency is 
-#reversed—now the least-squares estimators are less efficient than the 
+#reversedâ€”now the least-squares estimators are less efficient than the 
 #least-absolute-errors estimators. Once again, efficiency is a property of an 
 #estimator under a specific model, not of the statistic itself. 
 
@@ -834,7 +845,7 @@ plot(sim.lm(n = 50, a = 3, b = 0.5, rdist = rnorm.mix))
 #with intercept 3 and slope 1/2. In some trials, there are some points in the 
 #lower-right corner that are far removed from the rest of the data. These 
 #are outliers both in the sense of being removed from the rest of the data 
-#and from being actually created by a different process—their disturbances 
+#and from being actually created by a different processâ€”their disturbances 
 #are from the contaminating distribution.
 
 #b) Repeating the problem 1 code with rdist = rnorm.mix:
@@ -862,10 +873,10 @@ colMeans(ests)
 apply(ests, 2, var)
 
 #With this form of data contamination / outliers, neither set of estimators is unbiased 
-#or consistent. Both tend to produce slope estimates that are too low—the 
+#or consistent. Both tend to produce slope estimates that are too lowâ€”the 
 #line is being "pulled down" by the outlying points in the lower right. 
 #However, the least-absolute-errors estimators are much more robust than 
-#the least-squares estimators—they are closer to the true values on 
+#the least-squares estimatorsâ€”they are closer to the true values on 
 #average and have lower variance.
 
 #Problem 4)
@@ -992,7 +1003,7 @@ mean(ps < 0.1)
 
 #The distribution of p values is no longer uniform---it has a concentration of 
 #low p values, representing samples that would be unlikely to be drawn 
-#if µ were in fact 100. I find that about 17% of the p values are less than 
+#if Âµ were in fact 100. I find that about 17% of the p values are less than 
 #0.05 and that about 26% are less than 0.10.
 
 #2f) To simulate normal samples of size 4 from a NOrmal(102,4) distribution and 
@@ -1466,7 +1477,7 @@ lr.stat.slr(anscombe$x1, anscombe$y1)
 
 #Problem 1)
 
-#To begin, let's set some parameters and simulate data we’ll use in parts (a-c).
+#To begin, let's set some parameters and simulate data weâ€™ll use in parts (a-c).
 
 n <- 20
 true.mean <- 2
@@ -1589,7 +1600,7 @@ plot(reg32)
 summary(reg33)
 plot(reg33)
 
-#When prior precision is low—meaning that prior variance is high—then 
+#When prior precision is lowâ€”meaning that prior variance is highâ€”then 
 #the prior means are not especially important; these three choices 
 #lead to similar conclusions. If the prior precision is higher, 
 #then the prior means matter much more, and estimates are generally 
@@ -1656,7 +1667,7 @@ summary(BayesFactor(reg1, reg0))
 #Some relevant outputs are: 
 #  Intercept under H_1: posterior mean of 2.97, 95% credible interval [0.48, 5.52]
 #Slope under H_1: posterior mean of 0.50, 95% credible interval [0.23, 0.77]
-#Bayes factor B_10: 3.26. By Kass & Raftery’s scale, this is positive evidence for H_1 over H_0.  
+#Bayes factor B_10: 3.26. By Kass & Rafteryâ€™s scale, this is positive evidence for H_1 over H_0.  
 
 #b) Here is the code:
   
@@ -1669,7 +1680,7 @@ summary(BayesFactor(reg11, reg01))
 #Some relevant outputs are: 
 #  Intercept under H_1: posterior mean of 2.76, 95% credible interval [0.33, 5.13]
 #Slope under H_1: posterior mean of 0.52, 95% credible interval [0.27, 0.78]
-#Bayes factor B_10: 26.9. By Kass & Raftery’s scale, this is strong evidence for H_1 over H_0.  
+#Bayes factor B_10: 26.9. By Kass & Rafteryâ€™s scale, this is strong evidence for H_1 over H_0.  
 
 #c) Here is the code:
   
