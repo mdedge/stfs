@@ -243,6 +243,45 @@ ps.1sz <- function(d, n, level = 0.05, nsim = 10000){
   mean(ps < level)
 }
 
+#Function to simulate the "winner's curse"---the effect that especially in low-power
+#situations, estimates that result in signficant tests for the null hypothesis of
+#theta = 0 tend also to be overestimates.
+#In each simulation, a single normal sample is drawn and the hypothesis that the true effect size is zero
+#is tested(by one-sample t-test).
+#The output is named vector with a a true effect size (measured in number of standard deviations
+#from the value under the null hypothesis), the "estimated" effect size, which
+#is the mean effect size from simulations that produced significant results,
+#and the power, which is the proportion of simulations that achieved significance.
+#A histogram is also produced, with all the estimated effect sizes shown, and the
+#estimates associated with significant tests colored grey.
+#d is the true effect size in the simulations.
+#n is the size of each simulated sample
+#lev is the significance level---effect size estimates are averaged in the "estimated d" part of the output only if the one-sample z test produces a p value less than the level.
+#nsim is the number of simuations to run.
+#abs.vals controls whether we pay attention to the sign of the estimate (if FALSE, the default, we do).
+#br is the breaks parameter for the histogram.
+wc.1sz <- function(d, n, lev = 0.05, nsim = 10000, abs.vals = FALSE, br = 50){
+  samps <- rnorm(n*nsim, d, 1)
+  simmat <- matrix(samps, nrow = nsim)
+  samp.means <- rowMeans(simmat)
+  neg.devs <- -abs(samp.means)
+  ps <- 2*pnorm(neg.devs, 0, 1/sqrt(n))
+  power <- mean(ps < lev)
+  if(abs.vals == TRUE){
+    ests.out <- abs(samp.means)
+  }
+  if(abs.vals == FALSE){
+    ests.out <- samp.means
+  }
+  est.d <- mean(ests.out[ps < lev])
+  cut.xbar.n <- qnorm(lev/2, 0, 1/sqrt(n))
+  h <- hist(ests.out, breaks = br)
+  cuts <- cut(h$breaks, c(-Inf, cut.xbar.n, -cut.xbar.n, Inf))
+  plot(h, col = c("grey", "white", "grey")[cuts], xlab = 	"Estimated effect sizes", main = "")
+  return(c("true d" = d, "estimated d" = est.d, "power" = 	power))
+}
+
+
 #Draw a bootstrap sample of entries from a vector or rows 
 #from a matrix.
 boot.samp <- function(x){
