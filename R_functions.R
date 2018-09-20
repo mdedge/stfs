@@ -6,7 +6,16 @@
 #install and load the devtools package and use the source_url() function, like so:
 #if(!("devtools" %in% installed.packages())){install.packages("devtools")}
 #library(devtools)
-#source_url("https://raw.githubusercontent.com/mdedge/from-scratch/master/R_functions.R")
+#source_url("https://raw.githubusercontent.com/mdedge/stfs/master/R_functions.R")
+
+#All of the functions contained here are also included in the book's companion 
+#R package, stfspack. To install and load stfspack, use
+#First, get devtools, which allows installation from github
+if(!("devtools" %in% installed.packages())){install.packages("devtools")}
+library(devtools) 
+#Next, install and load the package.
+if(!("stfspack" %in% installed.packages())){install_github("mdedge/stfspack")}
+library(stfspack)
 
 #Install (if necessary) and load all packages used in the book's code.
 if(!("animation" %in% installed.packages())){install.packages("animation")}
