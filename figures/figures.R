@@ -554,7 +554,7 @@ target_plot_sm <- function(n, xm = 0, xs = 1, ym = 0, ys = 1, ...){
 }
 
 
-pdf_or_tiff(pdf_ind, "fig6_2", width = figwidth*1.7, height = figheight)
+pdf_or_tiff(pdf_ind, "fig6_3", width = figwidth*1.7, height = figheight)
 set.seed(8675309)
 par(mar = c(0,2,2,0), las = 1, family = fontfam, xaxs="i", yaxs = "i")
 par(mfrow = c(2,4))
@@ -577,7 +577,7 @@ dev.off()
 
 
 
-pdf_or_tiff(pdf_ind, "fig6_3", width = figwidth*1.7, height = figheight)
+pdf_or_tiff(pdf_ind, "fig6_4", width = figwidth*1.7, height = figheight)
 set.seed(8675309)
 par(mar = c(0,2,2,0), las = 1, family = fontfam, xaxs="i", yaxs = "i")
 par(mfrow = c(2,4))
@@ -601,7 +601,7 @@ dev.off()
 
 
 
-pdf_or_tiff(pdf_ind, "fig6_4", width = figwidth*.85, height = figheight)
+pdf_or_tiff(pdf_ind, "fig6_6", width = figwidth*.85, height = figheight)
 set.seed(123456)
 par(mar = c(1,1.1,1.1,1), las = 1, family = fontfam)
 par(mfrow = c(2,2))
