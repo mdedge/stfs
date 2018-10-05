@@ -134,6 +134,27 @@ dev.off()
 #Chapter 4
 
 #Figure 4-3
+#pdf_or_tiff(pdf_ind, "fig4_3", width = figwidth, height = (4/3)*figwidth )
+#par(mar = mar.fx, las = 1, family = fontfam, bty = "n")
+#par(mfrow=c(2,1))
+#x <- 1:6
+#fx <- rep(1/6,6)
+#Fx <- cumsum(fx)
+
+#plot(x, fx, type = "h", xlab = expression(italic(x)), 
+#     ylab = expression(paste(italic(f[X]), "(", italic(x), ")", sep = "")), 
+#     xlim = c(0,7), ylim = c(0,1), cex.axis = cex.labs.fx, cex.lab = cex.labs.fx)
+#mtext("Probability mass function", adj = 0, cex = cex.labs.fx)
+
+#cdf.plot <- stepfun(x, c(0,Fx), f=0)
+#plot.stepfun(cdf.plot, xlab = expression(italic(x)), 
+#             ylab = expression(paste(italic(F[X]), "(", italic(x), ")", sep = "")), 
+#             xlim = c(0,7), ylim = c(0,1),pch= 16, main = "", verticals = FALSE,
+#             cex.axis = cex.labs.fx, cex.lab = cex.labs.fx)
+#mtext("Cumulative distribution function", adj = 0, cex = cex.labs.fx)
+#dev.off()
+
+#Figure 4-3
 pdf_or_tiff(pdf_ind, "fig4_3", width = figwidth, height = (4/3)*figwidth )
 par(mar = mar.fx, las = 1, family = fontfam, bty = "n")
 par(mfrow=c(2,1))
@@ -141,10 +162,26 @@ x <- 1:6
 fx <- rep(1/6,6)
 Fx <- cumsum(fx)
 
-plot(x, fx, type = "h", xlab = expression(italic(x)), 
+plot(x, fx, pch = 19, xlab = expression(italic(x)), 
      ylab = expression(paste(italic(f[X]), "(", italic(x), ")", sep = "")), 
      xlim = c(0,7), ylim = c(0,1), cex.axis = cex.labs.fx, cex.lab = cex.labs.fx)
+lines(c(-1,8),c(0,0))
+points(1:6,rep(0,6))
 mtext("Probability mass function", adj = 0, cex = cex.labs.fx)
+#text("{", x= .85, y = 1/12, cex = 2.4)
+lines(c(1,1), c(0, 1/6), lty = 2, col = "grey55")
+text(expression(italic(f[X](1))), x = .65, y = 1/12, cex = 1, col = "grey55")
+lines(c(2,2), c(0, 1/6), lty = 2, col = "grey55")
+text(expression(italic(f[X](2))), x = 1.65, y = 1/12, cex = 1, col = "grey55")
+lines(c(3,3), c(0, 1/6), lty = 2, col = "grey55")
+text(expression(italic(f[X](3))), x = 2.65, y = 1/12, cex = 1, col = "grey55")
+lines(c(4,4), c(0, 1/6), lty = 2, col = "grey55")
+text(expression(italic(f[X](4))), x = 3.65, y = 1/12, cex = 1, col = "grey55")
+lines(c(5,5), c(0, 1/6), lty = 2, col = "grey55")
+text(expression(italic(f[X](5))), x = 4.65, y = 1/12, cex = 1, col = "grey55")
+lines(c(6,6), c(0, 1/6), lty = 2, col = "grey55")
+text(expression(italic(f[X](6))), x = 5.65, y = 1/12, cex = 1, col = "grey55")
+
 
 cdf.plot <- stepfun(x, c(0,Fx), f=0)
 plot.stepfun(cdf.plot, xlab = expression(italic(x)), 
@@ -152,6 +189,19 @@ plot.stepfun(cdf.plot, xlab = expression(italic(x)),
              xlim = c(0,7), ylim = c(0,1),pch= 16, main = "", verticals = FALSE,
              cex.axis = cex.labs.fx, cex.lab = cex.labs.fx)
 mtext("Cumulative distribution function", adj = 0, cex = cex.labs.fx)
+lines(c(1,1), c(0, 1/6), lty = 2, col = "grey55")
+text(expression(italic(f[X](1))), x = .65, y = 1/12, cex = 1, col = "grey55")
+lines(c(2,2), c(1/6, 2/6), lty = 2, col = "grey55")
+text(expression(italic(f[X](2))), x = 1.65, y = 3/12, cex = 1, col = "grey55")
+lines(c(3,3), c(2/6, 3/6), lty = 2, col = "grey55")
+text(expression(italic(f[X](3))), x = 2.65, y = 5/12, cex = 1, col = "grey55")
+lines(c(4,4), c(3/6, 4/6), lty = 2, col = "grey55")
+text(expression(italic(f[X](4))), x = 3.65, y = 7/12, cex = 1, col = "grey55")
+lines(c(5,5), c(4/6, 5/6), lty = 2, col = "grey55")
+text(expression(italic(f[X](5))), x = 4.65, y = 9/12, cex = 1, col = "grey55")
+lines(c(6,6), c(5/6, 6/6), lty = 2, col = "grey55")
+text(expression(italic(f[X](6))), x = 5.65, y = 11/12, cex = 1, col = "grey55")
+
 dev.off()
 
 
@@ -167,13 +217,15 @@ plot(x, fx, type = "l", xlab = expression(italic(x)),
      ylab = expression(paste(italic(f[X]), "(", italic(x), ")", sep = "")), lwd = 2,
      cex.axis = cex.labs.fx, cex.lab = cex.labs.fx)
 polygon(c(0, seq(0, 1, length.out = 1000), 1), c(0, dexp(seq(0, 1, length.out = 1000)), 0),  col = "grey", border = NA)
+text(expression(italic(F[X](1))), x = 1/2, y = 1/4)
 mtext("Probability density function", adj = 0, cex = cex.labs.fx)
 
 plot(x, Fx, type = "l", xlab = expression(italic(x)), 
      ylab = expression(paste(italic(F[X]), "(", italic(x), ")", sep = "")), lwd = 2,
      cex.axis = cex.labs.fx, cex.lab = cex.labs.fx)
+text(expression(italic(F[X](1))), x = 1.2, y = 1/4, srt = 90, col = "grey55")
 mtext("Cumulative distribution function", adj = 0, cex = cex.labs.fx)
-lines(c(1,1), c(0, pexp(1)))
+lines(c(1,1), c(0, pexp(1)), lty = 2, col = "grey55")
 dev.off()
 
 
@@ -282,6 +334,57 @@ text(x=-2.5,y=2.5,labels="xy is negative", cex = tcex)
 text(x=2.5,y=-2.5,labels="xy is negative", cex = tcex)
 mtext("Correlated variables", adj = 0, cex = cex.labs.fx*1.4)
 dev.off()
+
+
+
+
+x <- seq(-3,3, length.out = 200)
+y <- seq(-3,3, length.out = 200)
+
+dbvnorm <- function(x, y, meanx=0, meany=0, sdx = 1, sdy = 1, cor = 0){
+  fxy <- (1/(2*pi*sdx*sdy*sqrt(1-cor^2)))*exp(-(1/(2*(1-cor^2)))*(((x-meanx)^2)/(sdx^2) + ((y-meany)^2)/(sdy^2) - 2*cor*(x-meanx)*(y-meany)/(sdx*sdy)))
+  return(fxy)
+}
+
+pdf_or_tiff(pdf_ind, "fig5_corr", width = figwidth*5, height = figwidth)
+par(cex = cex.labs.fx, mar = mar.fx, las = 1, family = fontfam, bty = "n", xpd = TRUE)
+par(mfrow = c(1,5))
+
+densmat <- outer(x, y, dbvnorm, meanx = 0, meany = 0, sdx = 1, sdy = 1, cor = -.8)
+contour(x,y,z = densmat, 
+        drawlabels = FALSE, cex.axis = cex.labs.fx, cex.lab = cex.labs.fx*1.2, xlab = "", ylab = "", xaxt = "n", yaxt = "n")
+axis(side = 1, labels = FALSE)
+axis(side = 2, labels = FALSE)
+text("Cor = -.8", x = -1.5, y = 3.2, cex = cex.labs.fx*3.5)
+
+
+densmat <- outer(x, y, dbvnorm, meanx = 0, meany = 0, sdx = 1, sdy = 1, cor = -.4)
+contour(x,y,z = densmat, xlab = expression(italic(x)), ylab = expression(italic(y)), 
+        drawlabels = FALSE, cex.axis = cex.labs.fx, cex.lab = cex.labs.fx*1.2)
+text("Cor = -.4", x = -1.5, y = 3.2, cex = cex.labs.fx*3.5)
+
+
+densmat <- outer(x, y, dbvnorm, meanx = 0, meany = 0, sdx = 1, sdy = 1, cor = 0)
+contour(x,y,z = densmat, xlab = expression(italic(x)), ylab = expression(italic(y)), 
+        drawlabels = FALSE, cex.axis = cex.labs.fx, cex.lab = cex.labs.fx*1.2)
+
+text("Cor = 0", x = -1.5, y = 3.2, cex = cex.labs.fx*3.5)
+
+
+densmat <- outer(x, y, dbvnorm, meanx = 0, meany = 0, sdx = 1, sdy = 1, cor = 0.4)
+
+contour(x,y,z = densmat, xlab = expression(italic(x)), ylab = expression(italic(y)), 
+        drawlabels = FALSE, cex.axis = cex.labs.fx, cex.lab = cex.labs.fx*1.2)
+text("Cor = .4", x = -1.5, y = 3.2, cex = cex.labs.fx*3.5)
+
+densmat <- outer(x, y, dbvnorm, meanx = 0, meany = 0, sdx = 1, sdy = 1, cor = 0.8)
+
+contour(x,y,z = densmat, xlab = expression(italic(x)), ylab = expression(italic(y)), 
+        drawlabels = FALSE, cex.axis = cex.labs.fx, cex.lab = cex.labs.fx*1.2)
+text("Cor = .8", x = -1.5, y = 3.2, cex = cex.labs.fx*3.5)
+
+dev.off()
+
 
 
 #Figure 5-5
@@ -638,7 +741,7 @@ ubs <- x + se.z*cutoff.ses
 
 mean(ubs > mean.z & lbs < mean.z)
 
-plot(1:n.ints, x, pch = "", ylim = c(-4.3,4.3), xlab = "Sample Number", 
+plot(1:n.ints, x, pch = "", ylim = c(-4.3,4.3), xlab = "Sample number", 
      ylab = expression(paste("Confidence Interval for  ", theta, " (true ", theta, " = 0)")), 
      cex = cex.pts, cex.lab = cex.labs, cex.axis = cex.axs, las = 1, xaxt = "n")
 axis(1,  at = c(1,10,20,30,40,50), cex.lab = cex.labs, cex.axis = cex.axs)
@@ -648,6 +751,7 @@ for(i in 1:n.ints){
 }
 
 dev.off()
+
 
 
 
@@ -716,6 +820,70 @@ legend("bottomright", legend = c(paste("n =", as.character(na)),
                                  paste("n =", as.character(nb)), 
                                  paste("n =", as.character(nc))), 
        lty = c(1,2,3), lwd = line.w, cex = cex.labs, bty = "n")
+
+dev.off()
+
+
+
+#Figure Power and CI 7-5
+
+cisimplot <- function(mean.z, se.z, n.ints = 50, conf = .9, null.mean = NULL, print.pow = FALSE, pts = TRUE, ... ){
+  cutoff.ses <- qnorm(conf + (1-conf)/2)
+  x <- rnorm(n.ints, mean.z, se.z)
+  lbs <- x - se.z*cutoff.ses
+  ubs <- x + se.z*cutoff.ses
+  plot(1:n.ints, x, pch = "", las = 1, xaxt = "n", yaxt = "n", ...)
+  axis(2, at = c(-3, mean.z,3), label = c("",expression(theta),""))
+  if(!is.null(null.mean)){
+    axis(4, at = null.mean, label = expression(theta[0]), mgp = c(0,0,0), tick = FALSE)
+  }
+  #axis(1, at = c(1,n.ints),label = c("",""),cex.lab = cex.labs, cex.axis = cex.axs)
+  lines(c(0, n.ints*1.02), c(mean.z, mean.z), lty = 2)
+  if(!is.null(null.mean)){
+    lines(c(0, n.ints*1.02), c(null.mean, null.mean), lty = 1)
+  }
+  for(i in 1:n.ints){
+    lines(c(i,i), c(lbs[i], ubs[i]))
+  }
+  if(pts){points(1:n.ints, x, pch = 20, cex = .5)}
+  if(pts & !is.null(null.mean)){points((1:n.ints)[lbs < null.mean & ubs > null.mean], x[lbs < null.mean & ubs > null.mean], col = "grey", pch = 20, cex = .5)}
+  if(!(is.null(null.mean))){
+    for(i in 1:n.ints){
+      if(lbs[i] < null.mean & ubs[i] > null.mean){
+        lines(c(i,i), c(lbs[i], ubs[i]), col = "grey")
+      }
+    }
+  }
+  if(!is.null(null.mean)){print(1 - mean(ubs > null.mean & lbs < null.mean))}
+  print(mean(ubs > mean.z & lbs < mean.z))
+}
+
+pdf_or_tiff(pdf_ind, "fig7_5", width = figwidth*1, height = figheight)
+set.seed(867234567)
+par(mfrow = c(3,3))
+par(mar = c(0,3,3,2), las = 1, family = fontfam, mgp = mgp.set, bty = "n", xpd = NA)
+
+cisimplot(0, .8, ylim = c(-3.2,3.2), null.mean = 0, ylab = "", xlab = "")
+#mtext("Null is true", cex = cex.labs*.7, line = 1)
+mtext(expression(paste("Effect ",theta - theta[0] == 0)), cex = cex.labs*.7, line = 1)
+mtext(expression(paste("Small ", italic(n))), side = 2, las = 0, cex = cex.labs*.7, line = 1.8)
+cisimplot(.5, .8, ylim = c(-3.2,3.2), null.mean = 0, ylab = "", xlab = "")
+#mtext("Moderate true effect", cex = cex.labs*.7, line = 1)
+mtext(expression(paste("Effect ",theta - theta[0] , "= small")), cex = cex.labs*.7, line = 1)
+cisimplot(1, .8, ylim = c(-3.2,3.2), null.mean = 0, ylab = "", xlab = "")
+#mtext("Large true effect", cex = cex.labs*.7, line = 1)
+mtext(expression(paste("Effect ",theta - theta[0] , "= large")), cex = cex.labs*.7, line = 1)
+
+
+cisimplot(0, .4, ylim = c(-3.2,3.2), null.mean = 0, ylab = "", xlab = "")
+mtext(expression(paste("Moderate ", italic(n))), side = 2, las = 0, cex = cex.labs*.7, line = 1.8)
+cisimplot(.5, .4, ylim = c(-3.2,3.2), null.mean = 0, ylab = "", xlab = "")
+cisimplot(1, .4, ylim = c(-3.2,3.2), null.mean = 0, ylab = "", xlab = "")
+
+cisimplot(0, .2, ylim = c(-3.2,3.2), null.mean = 0, ylab = "", xlab = "")
+mtext(expression(paste("Large ", italic(n))), side = 2, las = 0, cex = cex.labs*.7, line = 1.8)
+cisimplot(.5, .2, ylim = c(-3.2,3.2), null.mean = 0, ylab = "", xlab = "")
+cisimplot(1, .2, ylim = c(-3.2,3.2), null.mean = 0, ylab = "", xlab = "")
 
 dev.off()
 
