@@ -188,6 +188,24 @@ summary(prob.fit)
 #This is in contrast to the linear regression case, where heteroskedasticity
 #can cause inefficiency but the estimators remain consistent.
 
+#c) 
+plot(sim.lm(5000, 3, 1/2, het.coef = .25))
+
+ests <- sim.lm.ests(n = 10, nsim = 1000, a = 3, b = 1/2, het.coef = .25)
+hist(ests[,2])
+colMeans(ests)
+apply(ests, 2, var)
+ests <- sim.lm.ests(n = 50, nsim = 1000, a = 3, b = 1/2, het.coef = .25)
+colMeans(ests)
+apply(ests, 2, var)
+ests <- sim.lm.ests(n = 100, nsim = 1000, a = 3, b = 1/2, het.coef = .25)
+colMeans(ests)
+apply(ests, 2, var)
+ests <- sim.lm.ests(n = 1000, nsim = 1000, a = 3, b = 1/2, het.coef = .25)
+colMeans(ests)
+apply(ests, 2, var)
+
+
 ##############################
 ##############################
 ##############################
@@ -238,4 +256,3 @@ sd(slopes)
 #Ignoring dependence among the observations causes us to overestimate 
 #the amount of information we have, leading to standard error 
 #estimates that are too small.
-

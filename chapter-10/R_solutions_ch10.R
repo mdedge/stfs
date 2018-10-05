@@ -72,11 +72,11 @@ sd(rsamps)
 
 #Get 1 sample under rejection sampling from normal with known sd.
 #z is a vector of data.
-#get.1.samp.norm <- function(z, known.sd = 1, prior.mn = 0, prior.sd = 1){
+#get.1.samp.norm <- function(z, known.sd = 1, prior.mean = 0, prior.sd = 1){
 #  accepted <- FALSE
 #  max.like <- exp(sum(log(dnorm(z, mean = mean(z), sd = known.sd))))
 #  while(accepted == FALSE){
-#    cand <- rnorm(1, prior.mn, prior.sd)
+#    cand <- rnorm(1, prior.mean, prior.sd)
 #    like <- exp(sum(log(dnorm(z, mean = cand, sd = known.sd))))
 #    crit <- like / max.like
 #    xunif <- runif(1,0,1)
@@ -86,10 +86,10 @@ sd(rsamps)
 #}
 
 #Wrapper for get.1.samp.norm() that gets rejection sample from posterior of desired size.
-#reject.samp.norm <- function(z, known.sd = 1, prior.mn = 0, prior.sd = 1, nsamps = 10000){
+#reject.samp.norm <- function(z, known.sd = 1, prior.mean = 0, prior.sd = 1, nsamps = 10000){
 #  samps <- numeric(nsamps)
 #  for(i in seq_along(samps)){
-#    samps[i] <- get.1.samp.norm(z, known.sd, prior.mn, prior.sd)
+#    samps[i] <- get.1.samp.norm(z, known.sd, prior.mean, prior.sd)
 #  }
 #  samps
 #}

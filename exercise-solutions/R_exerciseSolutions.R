@@ -64,17 +64,6 @@ if(!("gpairs" %in% installed.packages())){
 library(gpairs) #load the package
 gpairs(iris, scatter.pars = list(col = as.numeric(iris$Species)))
 
-
-#Problem 3
-
-#To install and load stfspack, use
-install.packages("devtools")
-library(devtools) 
-#Next, install and load the package.
-install_github("mdedge/stfspack")
-library(stfspack)
-
-
 ########################
 ########################
 ########################
@@ -184,11 +173,11 @@ lines(c(1,2), c(1, 1))
 x <- seq(-3, 3, length.out = 1000)
 plot(x, dnorm(x, mean = 0, sd = 1), type = "l")
   
- # b)
+#b)
 x <- seq(-3, 3, length.out = 1000)
 plot(x, pnorm(x, mean = 0, sd = 1), type = "l")
   
-  #c) What value of x is at the 97.5th percentile of the standard normal distribution?
+#c) What value of x is at the 97.5th percentile of the standard normal distribution?
 qnorm(0.975, mean = 0, sd = 1)
 #This value, 1.96, is a useful number to remember, for reasons that will be discussed in chapter 7.
 
@@ -196,11 +185,11 @@ qnorm(0.975, mean = 0, sd = 1)
 normsims <- rnorm(1000, mean = 0, sd = 1)
 hist(normsims)
   
-  #b) 
+#b) 
 unifsims <- runif(1000, 0 , 1)
 hist(qnorm(unifsims, mean = 0, sd = 1))
-  
-  #We simulated uniform random draws, but we were able to transform them to draws from 
+
+#We simulated uniform random draws, but we were able to transform them to draws from 
 #a normal distribution by feeding them through the normal quantile function, 
 #or the inverse of the normal distribution function. 
   
@@ -218,19 +207,19 @@ for(i in x){
   lines(c(i,i), c(min(x), pnorm(i)), col = rgb(190, 190, 190, 	alpha = 60, max = 255))
   lines(c(min(x)-1,i), c(pnorm(i), pnorm(i)), col = rgb(190, 	190, 190, alpha = 60, max = 255))
 }
-  
+
 #The cumulative distribution function of X is drawn in solid black. The light grey 
 #lines represent 500 random draws from the distribution of X. Start on the 
 #horizontal axis. Each light grey line traces from the value of one of the 
 #random samples of X on the x-axis up to the cumulative distribution function. 
 #Once it hits the cumulative distribution function, it turns left until it hits 
 #the vertical axis. Notice that the positions where the lines hit the x-axis are 
-#centered on zero, symmetric, and concentrated near the middleâ€”they look like a 
+#centered on zero, symmetric, and concentrated near the middle—they look like a 
 #normal distribution. Entering hist(x) will confirm the suspicion. In contrast, 
 #the lines hit the y-axis with roughly uniform density from zero to one. 
 hist(pnorm(x)) 
 #confirms uniformity. 
-  
+
 #To make the plot, we simulated x-values from the normal distribution and fed 
 #them into pnorm() to get uniformly distributed data. Effectively, we traced 
 #grey lines from the horizontal axis up to the cumulative distribution function 
@@ -260,6 +249,9 @@ samps <- rnorm(samp.size*n.samps, mean = 0, sd = 1) #draw samples
 samp.mat <- matrix(samps, ncol = n.samps) #organize samples into a matrix
 samp.means <- colMeans(samp.mat) #take the mean of each column
 hist(samp.means)
+
+#The mat.samps() function in stfspack also does the step of reformatting
+#as a matrix.
 
 #If you increase the samp.size variable from 20 to larger numbers,
 #you will see that the means become more tightly clustered
@@ -368,7 +360,7 @@ dosm.beta.hist(50, 10000, shape1 = s.pars[1], shape2 =  s.pars[2])
 #With the parameters and sample size requested, the distribution of sample means 
 #is a good fit to the normal only within about 2 standard deviations of the 
 #expectation. Beyond that, the Pareto sample mean distribution has much heavier 
-#tails than the normalâ€”extreme observations are much more likely than normal 
+#tails than the normal—extreme observations are much more likely than normal 
 #theory predicts. For example, there are about 100 times as many observations 
 #beyond 5 standard deviations from the expectation as would be predicted by the 
 #normal distribution, and there are thousands of times as many observations 
@@ -387,7 +379,7 @@ n.sim <- 100000
 #CLT applies, if a > 2. For large a, convergence to 
 #normal is better. With small a, convergence is slow,
 #especially in the tails.
-a <- 3
+a <- 4
 b <- 1
 
 #Compute the expectation and variance of the distribution
@@ -426,10 +418,19 @@ compare.tail.to.normal(means.sim, 6, expec.par, sd.mean)
 #b is the slope.
 #var.eps is the variance of the disturbances, which are drawn from a
 #normal distribution with expectation 0.
-sim_0_1 <- sim.lm(a = 0, b = 1)
-plot(sim_0_1[,1], sim_0_1[,2])
-abline(0,1) #draw the E(Y|x) line
+sim <- sim.lm(n = 100, a = 3, b = .5)
+plot(sim)
+abline(3, 1/2) #draw the E(Y|x) line
 
+#Draw disturbances from a Laplace distribution (if stfspack is loaded)
+sim <- sim.lm(n = 100, a = 3, b = .5, rdist = rlaplace)
+plot(sim)
+abline(3, 1/2) #draw the E(Y|x) line
+
+#Make the standard deviation of the disturbances increase linearly with x
+sim <- sim.lm(n = 100, a = 3, b = .5, het.coef = .2)
+plot(sim)
+abline(3, 1/2) #draw the E(Y|x) line
 
 
 ########################################
@@ -437,8 +438,8 @@ abline(0,1) #draw the E(Y|x) line
 
 #Problem 2)
 
-#Use the norm.samps() function to draw a set of samples:
-s.mat <- norm.samps(0, 1, 25, 10000)
+#Use the mat.samps() function to draw a set of samples from the standard normal:
+s.mat <- mat.samps(n = 25, nsim = 10000)
 
 #The 25 in the function call specifies the size of each sample; 
 #the 10000 specifies how many samples we draw.
@@ -460,7 +461,7 @@ for(i in 1:10000){
 #each sample, and you can also take their mean. The mean of the 
 #sample means will approach the expectation of the sample mean 
 #by the law of large numbers. The median does too, but the 
-#law of large numbers doesnâ€™t tell us that.
+#law of large numbers doesn’t tell us that.
 
 hist(ests.mean)
 hist(ests.median)
@@ -468,8 +469,8 @@ mean(ests.mean)
 mean(ests.median)
 
 #You should see that the histogram of the sample median is 
-#centered around thetaâ€”in this case, set to 0 by the norm.samps() 
-#callâ€”and that the mean of the sample medians is very close to 
+#centered around theta---in this case, set to 0 by the norm.samps() 
+#call---and that the mean of the sample medians is very close to 
 #zero. Repeating the procedure gives similar results. The 
 #results correctly suggest that the sample median is an 
 #unbiased estimate of theta when the data are independent samples 
@@ -482,9 +483,9 @@ mean(ests.median)
 
 #Problem 2)
 
-#This problem also requires a sample from norm.samps,
+#This problem also requires a sample from mat.samps,
 #then you need compute the means and medians.
-s.mat <- norm.samps(0, 1, 25, 10000)
+s.mat <- mat.samps(n = 25, nsim = 10000)
 ests.mean <- apply(s.mat, 1, mean)
 ests.median <- apply(s.mat, 1, median)
 
@@ -507,7 +508,7 @@ boxplot(ests.mean, ests.median)
 #convince ourselves that the variance of the sample median decreases 
 #to zero as the sample size increases.
 
-s.mat <- norm.samps(0, 1, 25, 10000)
+s.mat <- mat.samps(n = 25, nsim = 10000)
 ests.median <- apply(s.mat, 1, median)
 
 #Use var() to estimate the variance of the sample median:
@@ -519,11 +520,11 @@ var(ests.median)
 #Here is a set of commands that will do the trick:
 #Generate 5 sets of normal samples with 10,000 samples of each 
 #of these sizes: 25, 50, 100, 500, 1000.
-s.mat.25 <- norm.samps(0, 1, 25, 10000)
-s.mat.50 <- norm.samps(0, 1, 50, 10000)
-s.mat.100 <- norm.samps(0, 1, 100, 10000)
-s.mat.500 <- norm.samps(0, 1, 500, 10000)
-s.mat.1000 <- norm.samps(0, 1, 1000, 10000)
+s.mat.25 <- mat.samps(n = 25, nsim = 10000)
+s.mat.50 <- mat.samps(n = 50, nsim = 10000)
+s.mat.100 <- mat.samps(n = 100, nsim = 10000)
+s.mat.500 <- mat.samps(n = 500, nsim = 10000)
+s.mat.1000 <- mat.samps(n = 1000, nsim = 10000)
 #Calculate the median of each sample generated above.
 ests.median.25 <- apply(s.mat.25, 1, median)
 ests.median.50 <- apply(s.mat.50, 1, median)
@@ -551,7 +552,7 @@ boxplot(ests.median.25, ests.median.50, ests.median.100, ests.median.500, ests.m
 #Problem 1)
 
 mu <- 0
-s.mat <- norm.samps(mu, 1, 25, 10000)
+s.mat <- mat.samps(n = 25, nsim = 10000)
 ests.mean <- apply(s.mat, 1, mean)
 ests.median <- apply(s.mat, 1, median)
 
@@ -578,7 +579,7 @@ mu <- 0
 sigma <- 1
 re <- numeric(length(n))
 for(i in 1:length(n)){
-  x <- norm.samps(mu, sigma, n[i], nsims)
+  x <- mat.samps(n = n[i], nsim = nsims, mean = mu, sd = sigma)
   ests.median <- apply(x, 1, median)
   ests.mean <- apply(x, 1, mean)
   re[i] <- mean((ests.median - mu)^2)/mean((ests.mean - mu)^2)
@@ -586,18 +587,18 @@ for(i in 1:length(n)){
 plot(n, re, xlab = "sample size", ylab = "RE of sample mean vs. median for normal data")
 
 #When I run this code, the relative efficiency appears to level off 
-#between 1.5 and 1.6. This agrees with theoretical resultsâ€”a little math 
+#between 1.5 and 1.6. This agrees with theoretical results—a little math 
 #(beyond our scope) shows that the true asymptotic relative efficiency 
 #is pi/2 ~= 1.57.
 
 #Problem 2
 
 #Now repeat the solution to problem 1, replacing
-#norm.samps() with laplace.samps():
+#the rx argument of mat.samps with rlaplace
 #a)
 
 mu <- 0
-s.mat <- laplace.samps(mu, 1, 25, 10000)
+s.mat <- mat.samps(25, 10000, rx = rlaplace)
 ests.mean <- apply(s.mat, 1, mean)
 ests.median <- apply(s.mat, 1, median)
 re <- mean((ests.median - mu)^2)/mean((ests.mean - mu)^2)
@@ -610,7 +611,7 @@ mu <- 0
 sigma <- 1
 re <- numeric(length(n))
 for(i in 1:length(n)){
-  x <- laplace.samps(mu, sigma, n[i], nsims)
+  x <- mat.samps(n = n[i], nsim = nsims, rx = rlaplace, mu, sigma)
   ests.median <- apply(x, 1, median)
   ests.mean <- apply(x, 1, mean)
   re[i] <- mean((ests.median - mu)^2)/mean((ests.mean - mu)^2)
@@ -647,11 +648,11 @@ plot(x, y, pch = 19, xlab = "Estimate", ylab = "Loss")
 #a) You already have simulations to approximate the risk of the median of 
 #100 independent normal samples under squared error loss. Because the 
 #sample median is unbiased, the risk under squared error loss is equal 
-#to the variance (exercise set 6-3, problem 2). We can use the norm.samps() 
+#to the variance (exercise set 6-3, problem 2). We can use the mat.samps() 
 #function from exercise set 6-1, problem 2 to draw 100,000 samples of size 100, 
 #then use code from exercise set 6-4, problem 2 to compute the sample medians and check their variance:
 
-s.mat <- norm.samps(0, 1, 100, 10000)
+s.mat <- mat.samps(100, 10000)
 ests.median <- apply(s.mat, 1, median)
 var(ests.median)
 
@@ -679,9 +680,9 @@ mean(abs(ests.median))
 #still larger than the risk for the sample mean. Note that though 
 #the risk of the mean and median are larger and more similar with 
 #absolute error loss than with squared-error loss, absolute error 
-#loss and squared error loss are in different unitsâ€”original units 
+#loss and squared error loss are in different units—original units 
 #vs. squared units. Thus, the fact that the risks are larger and 
-#more similar isnâ€™t necessarily meaningful.
+#more similar isn’t necessarily meaningful.
   
 #c) After running the code in parts (a) and (b), assuming that you 
 #set mu=0, the approximate risk is given by
@@ -715,11 +716,10 @@ lines(theta, r.td, lty = 4)
 #Exercise set 6-8
 #Problem 1)
 
-#1) Here is the rnorm.out() function
-
+#1) 
 #Here is code to examine the first set of specified parameters:
 
-dat <- rnorm.out(1000, 100, 0.001, lambda = 3)
+dat <- mat.samps(n = 100, nsim = 1000, rx = rnorm.contam, contam.p = 0.001, contam.mu = 3, contam.sigma = 1)
 means <- apply(dat,2,mean)
 medians <- apply(dat,2,median)
 mean(means)
@@ -730,14 +730,14 @@ hist(means)
 hist(medians)
 
 #You can examine the other parameter sets by replacing the 0.001 
-#in the above function call with the desired gamma and replacing 
+#in the above function call with the desired contamination probability and replacing 
 #the 3 with the desired lambda. You will notice that when gamma
 #and lambda are large, both the median and the mean are biased 
 #upward, and they both increase in variance. The median, however, 
 #is much less affected by the aberrant observations than the mean is. 
 #When gamma is small, the median is almost unaffected. 
 
-#This exercise demonstrates the medianâ€™s robustness against 
+#This exercise demonstrates the median's robustness against 
 #outliers. 
 
 
@@ -747,17 +747,17 @@ hist(medians)
 #Exercise Set 6-9.
 
 #Problem 1) a)
-ests <- sim.lm.ests(1000, n = 10, a = 3, b = 1/2)
+ests <- sim.lm.ests(n = 10, nsim = 1000, a = 3, b = 1/2)
 hist(ests[,2])
 colMeans(ests)
 apply(ests, 2, var)
-ests <- sim.lm.ests(1000, n = 50, a = 3, b = 1/2)
+ests <- sim.lm.ests(n = 50, nsim = 1000, a = 3, b = 1/2)
 colMeans(ests)
 apply(ests, 2, var)
-ests <- sim.lm.ests(1000, n = 100, a = 3, b = 1/2)
+ests <- sim.lm.ests(n = 100, nsim = 1000, a = 3, b = 1/2)
 colMeans(ests)
 apply(ests, 2, var)
-ests <- sim.lm.ests(1000, n = 1000, a = 3, b = 1/2)
+ests <- sim.lm.ests(n = 1000, nsim = 1000, a = 3, b = 1/2)
 colMeans(ests)
 apply(ests, 2, var)
 
@@ -771,17 +771,17 @@ apply(ests, 2, var)
 
 if(!("quantreg" %in% installed.packages())){install.packages("quantreg")}
 library(quantreg)
-ests <- sim.lm.ests(1000, n = 10, a = 3, b = 1/2, estfun = rq)
+ests <- sim.lm.ests(n = 10, nsim = 1000, a = 3, b = 1/2, estfun = rq)
 hist(ests[,2])
 colMeans(ests)
 apply(ests, 2, var)
-ests <- sim.lm.ests(1000, n = 50, a = 3, b = 1/2, estfun = rq)
+ests <- sim.lm.ests(n = 50, nsim = 1000, a = 3, b = 1/2, estfun = rq)
 colMeans(ests)
 apply(ests, 2, var)
-ests <- sim.lm.ests(1000, n = 100, a = 3, b = 1/2, estfun = rq)
+ests <- sim.lm.ests(n = 100, nsim = 1000, a = 3, b = 1/2, estfun = rq)
 colMeans(ests)
 apply(ests, 2, var)
-ests <- sim.lm.ests(1000, n = 1000, a = 3, b = 1/2, estfun = rq)
+ests <- sim.lm.ests(n = 1000, nsim = 1000, a = 3, b = 1/2, estfun = rq)
 colMeans(ests)
 apply(ests, 2, var)
 
@@ -790,7 +790,7 @@ apply(ests, 2, var)
 
 #c) In this scenario (normally distributed disturbances of constant 
 #variance), the least-squares estimators are more efficient than the 
-#least-absolute-errors estimatorsâ€”both sets of estimators appear 
+#least-absolute-errors estimators—both sets of estimators appear 
 #close to unbiased in the simulations (and they are in fact unbiased), 
 #and the variances of the least-squares estimators are smaller at 
 #each sample size.
@@ -799,7 +799,7 @@ apply(ests, 2, var)
 
 #a)
 #for example, call this many times:
-plot(sim.lm(n = 50, a = 3, b = 0.5, rdist = rlaplace))
+plot(sim.lm(n = 50, a = 3, b = 0.5, rdisturb = rlaplace))
 #The cloud of observations is more vertically dispersed when the 
 #disturbances are Laplace distributed, but the effect is too 
 #subtle to detect reliably just by looking. (Statistical tests like 
@@ -810,73 +810,73 @@ plot(sim.lm(n = 50, a = 3, b = 0.5, rdist = rlaplace))
 #Laplace disturbances:
 
 #Least-squares
-ests <- sim.lm.ests(1000, n = 50, a = 3, b = 1/2, rdist = rlaplace)
+ests <- sim.lm.ests(n = 50, nsim = 1000, a = 3, b = 1/2, rdisturb = rlaplace)
 colMeans(ests)
 apply(ests, 2, var)
-ests <- sim.lm.ests(1000, n = 100, a = 3, b = 1/2, rdist = rlaplace)
+ests <- sim.lm.ests(n = 100, nsim = 1000, a = 3, b = 1/2, rdisturb = rlaplace)
 colMeans(ests)
 apply(ests, 2, var)
-ests <- sim.lm.ests(1000, n = 1000, a = 3, b = 1/2, rdist = rlaplace)
+ests <- sim.lm.ests(n = 1000, nsim = 1000, a = 3, b = 1/2, rdisturb = rlaplace)
 colMeans(ests)
 apply(ests, 2, var)
 
 #Least-absolute errors
-ests <- sim.lm.ests(1000, n = 50, a = 3, b = 1/2, estfun = rq, rdist = rlaplace)
+ests <- sim.lm.ests(n = 50, nsim = 1000, a = 3, b = 1/2, estfun = rq, rdisturb = rlaplace)
 colMeans(ests)
 apply(ests, 2, var)
-ests <- sim.lm.ests(1000, n = 100, a = 3, b = 1/2, estfun = rq, rdist = rlaplace)
+ests <- sim.lm.ests(n = 100, nsim = 1000, a = 3, b = 1/2, estfun = rq, rdisturb = rlaplace)
 colMeans(ests)
 apply(ests, 2, var)
-ests <- sim.lm.ests(1000, n = 1000, a = 3, b = 1/2, estfun = rq, rdist = rlaplace)
+ests <- sim.lm.ests(n = 1000, nsim = 1000, a = 3, b = 1/2, estfun = rq, rdisturb = rlaplace)
 colMeans(ests)
 apply(ests, 2, var)
 
 #Both sets of estimators appear to be approximately unbiased, and the simulations 
 #suggest that they may be consistent. However, the relative efficiency is 
-#reversedâ€”now the least-squares estimators are less efficient than the 
+#reversed---now the least-squares estimators are less efficient than the 
 #least-absolute-errors estimators. Once again, efficiency is a property of an 
 #estimator under a specific model, not of the statistic itself. 
 
 #Problem 3)
 
 #a) for example, call this many times:
-plot(sim.lm(n = 50, a = 3, b = 0.5, rdist = rnorm.mix))
+plot(sim.lm(n = 500, a = 3, b = 0.5, rdist = rnorm.contam))
 #The command shown shows a cloud of points centered around a line (not drawn) 
 #with intercept 3 and slope 1/2. In some trials, there are some points in the 
 #lower-right corner that are far removed from the rest of the data. These 
 #are outliers both in the sense of being removed from the rest of the data 
-#and from being actually created by a different processâ€”their disturbances 
+#and from being actually created by a different process---their disturbances 
 #are from the contaminating distribution.
 
 #b) Repeating the problem 1 code with rdist = rnorm.mix:
 
 #Least-squares
-ests <- sim.lm.ests(1000, n = 50, a = 3, b = 1/2, rdist = rnorm.mix)
+ests <- sim.lm.ests(n = 50, nsim = 1000, a = 3, b = 1/2, rdisturb = rnorm.contam)
 colMeans(ests)
 apply(ests, 2, var)
-ests <- sim.lm.ests(1000, n = 100, a = 3, b = 1/2, rdist = rnorm.mix)
+ests <- sim.lm.ests(n = 100, nsim = 1000, a = 3, b = 1/2, rdisturb = rnorm.contam)
 colMeans(ests)
 apply(ests, 2, var)
-ests <- sim.lm.ests(1000, n = 1000, a = 3, b = 1/2, rdist = rnorm.mix)
+ests <- sim.lm.ests(n = 1000, nsim = 1000, a = 3, b = 1/2, rdisturb = rnorm.contam)
 colMeans(ests)
 apply(ests, 2, var)
 
 #Least-absolute errors
-ests <- sim.lm.ests(1000, n = 50, a = 3, b = 1/2, estfun = rq, rdist = rnorm.mix)
+ests <- sim.lm.ests(n = 50, nsim = 1000, a = 3, b = 1/2, estfun = rq, rdisturb = rnorm.contam)
 colMeans(ests)
 apply(ests, 2, var)
-ests <- sim.lm.ests(1000, n = 100, a = 3, b = 1/2, estfun = rq, rdist = rnorm.mix)
+ests <- sim.lm.ests(n = 100, nsim = 1000, a = 3, b = 1/2, estfun = rq, rdisturb = rnorm.contam)
 colMeans(ests)
 apply(ests, 2, var)
-ests <- sim.lm.ests(1000, n = 1000, a = 3, b = 1/2, estfun = rq, rdist = rnorm.mix)
+ests <- sim.lm.ests(n = 1000, nsim = 1000, a = 3, b = 1/2, estfun = rq, rdisturb = rnorm.contam)
 colMeans(ests)
 apply(ests, 2, var)
 
 #With this form of data contamination / outliers, neither set of estimators is unbiased 
-#or consistent. Both tend to produce slope estimates that are too lowâ€”the 
+#or consistent. Both tend to produce slope estimates that are too low; the 
 #line is being "pulled down" by the outlying points in the lower right. 
 #However, the least-absolute-errors estimators are much more robust than 
-#the least-squares estimatorsâ€”they are closer to the true values on 
+#the least-squares estimators. They are closer to the true values on 
 #average and have lower variance.
 
 #Problem 4)
@@ -904,7 +904,7 @@ summary(ests)
 #Exercise Set 7-1
 #Problem 1)
 #d) 
-s.mat <- norm.samps(0, 1, 25, 10000)
+s.mat <- mat.samps(n = 25, nsim =10000)
 ests.median <- apply(s.mat, 1, median)
 
 #Heres the new part:
@@ -952,10 +952,10 @@ polygon(c(-z.a2, x.zs, z.a2), c(0, fx.zs, 0), col = "grey", border = FALSE)
 #2d)
 
 #To simulate the means of 10,000 samples of size four, we have two options. 
-#We can either simulate the samples (here, storing them in a matrix) 
+#We can either simulate the samples (here, using the mat.samps function from stfspack) 
 #and take their means:
-  
-sim.mat <- matrix(rnorm(40000, mean = 100, sd = 2), ncol = 4, 	nrow = 10000)
+
+sim.mat <- mat.samps(n = 4, nsim = 10000, rx = rnorm, 100, 2)
 sim.means <- rowMeans(sim.mat)
 
 #Or we can simulate the means directly, remembering that the means 
@@ -993,7 +993,7 @@ mean(ps < 0.1)
 #2e) To simulate normal samples of size 4 from a NOrmal(101,4) distribution 
 #and test the null hypothesis that mu=100, use the following:
 
-sim.mat <- matrix(rnorm(40000, mean = 101, sd = 2), ncol = 4, 	nrow = 10000)
+sim.mat <- mat.samps(n = 4, nsim = 10000, rx = rnorm, 101, 2)
 sim.means <- rowMeans(sim.mat)
 ps <- sapply(sim.means, FUN = twotailed.p.normal, mu = 100, 	stand.err = 1)
 
@@ -1003,13 +1003,13 @@ mean(ps < 0.1)
 
 #The distribution of p values is no longer uniform---it has a concentration of 
 #low p values, representing samples that would be unlikely to be drawn 
-#if Âµ were in fact 100. I find that about 17% of the p values are less than 
+#if µ were in fact 100. I find that about 17% of the p values are less than 
 #0.05 and that about 26% are less than 0.10.
 
 #2f) To simulate normal samples of size 4 from a NOrmal(102,4) distribution and 
 #test the null hypothesis that mu=100, use the following:
 
-sim.mat <- matrix(rnorm(40000, mean = 102, sd = 2), ncol = 4, 	nrow = 10000)
+sim.mat <- mat.samps(n = 4, nsim = 10000, rx = rnorm, 102, 2)
 sim.means <- rowMeans(sim.mat)
 ps <- sapply(sim.means, FUN = twotailed.p.normal, mu = 100, 	stand.err = 1)
 
@@ -1023,7 +1023,7 @@ mean(ps < 0.1)
 #2g) To simulate normal samples of size 16 from a Normal(101,4) distribution and 
 #test the null hypothesis that mu=100, use the following:
 
-sim.mat <- matrix(rnorm(160000, mean = 101, sd = 2), ncol = 16, 	nrow = 10000)
+sim.mat <- mat.samps(n = 16, nsim = 10000, rx = rnorm, 101, 2)
 sim.means <- rowMeans(sim.mat)
 ps <- sapply(sim.means, FUN = twotailed.p.normal, mu = 100, 	stand.err = 1/2)
 
@@ -1042,26 +1042,26 @@ mean(ps < 0.1)
 ##############################
 ##############################
 ##############################
-#Exercise Set 7-4
+#Exercise Set 7-5
 
-#Problem 2)
+#Problem 1)
 #a)
 
 library(MASS)
 
-ps <- many.outcome.sim(20, 3, .7, 10000)
+ps <- many.outcome.sim(n = 20, nsim = 10000, n.dv = 7, correl = .7)
 sigs <- ps < .05 #Which entries are significant?
 colMeans(sigs) # proportion of tests that were significant for each measurement.
 mean(rowMeans(sigs) > 0) #significant result for at least one of the measurements.
 
 #b) Here are a couple of other possibilities:
 
-ps <- many.outcome.sim(20, 10, .7, 10000)
+ps <- many.outcome.sim(n = 20, nsim = 10000, n.dv = 20, correl = .7)
 sigs <- ps < .05 #Which entries are significant?
 colMeans(sigs) # proportion of tests that were significant for each measurement.
 mean(rowMeans(sigs) > 0) #significant result for at least one of the measurements.
 
-ps <- many.outcome.sim(20, 3, .1, 10000)
+ps <- many.outcome.sim(n = 20, nsim = 10000, n.dv = 7, correl = .1)
 sigs <- ps < .05 #Which entries are significant?
 colMeans(sigs) # proportion of tests that were significant for each measurement.
 mean(rowMeans(sigs) > 0) #significant result for at least one of the measurements.
@@ -1070,13 +1070,20 @@ mean(rowMeans(sigs) > 0) #significant result for at least one of the measurement
 #the probability that at least one of the tests will produce a type I error,
 #also called the familywise error rate.
 
-#Problem 3)
+#Problem 2)
 
-ps <- serial.testing.sim()
+ps <- serial.testing.sim(ns = c(10, 20, 30, 40, 50))
 
 sigs <- ps < .05 #Which entries are significant?
-colMeans(sigs) # proportion of tests that were significant for each measurement.
-mean(rowMeans(sigs) > 0) #significant result for at least one of the measurements.
+colMeans(sigs) # proportion of tests that were significant at each stopping point.
+mean(rowMeans(sigs) > 0) #significant result for at least one stopping point.
+
+ps <- serial.testing.sim(ns = c(10, 20, 30, 40, 50, 60, 70, 80, 90, 100))
+
+sigs <- ps < .05 #Which entries are significant?
+colMeans(sigs) # proportion of tests that were significant at each stopping point.
+mean(rowMeans(sigs) > 0) #significant result for at least one stopping point.
+
 
 #The proposed procedure leads to an incorrect rejection of the null 
 #hypothesis about 11-12% of the time, which grows worse with more repeated testing. 
@@ -1085,28 +1092,28 @@ mean(rowMeans(sigs) > 0) #significant result for at least one of the measurement
 ##############################
 ##############################
 ##############################
-#Exercise set 7-5
+#Exercise set 7-6
 
 #1)
 
 #The following block of code provides one way to produce the necessary plot, 
-#assuming that the ps.1sz() function is defined:
+#assuming that the power.sim.1sz() function is defined:
 
 n <- 25
 d <- seq(-2, 2, length.out = 101)
 pow <- numeric(length(d))
 for(i in 1:length(d)){
-  pow[i] <- ps.1sz(d[i], n)
+  pow[i] <- power.sim.1sz(n = n, nsim = 1000, d[i])
 }
 plot(d, pow, ylim = c(0,1), type = "l", ylab = "Power")
 
 #2)
 # few possible parameter choices.
-wc.1sz( .3, 50, .05) 
-wc.1sz( .5, 50, .05) 
-wc.1sz( .1, 50, .05) 
-wc.1sz( .3, 25, .05) 
-wc.1sz( .3, 50, .01)
+wincurse.sim.1sz(n = 50, nsim = 10000, d = .3)
+wincurse.sim.1sz(n = 100, nsim = 10000, d = .3)
+wincurse.sim.1sz(n = 25, nsim = 10000, d = .3)
+wincurse.sim.1sz(n = 50, nsim = 10000, d = .1)
+wincurse.sim.1sz(n = 50, nsim = 10000, d = .3, lev = .01)
 
 #b)
 
@@ -1117,7 +1124,7 @@ est.ds <- numeric(length(ns))
 
 #Save power and estimated effect sizes.
 for(i in 1:length(ns)){
-  wc <- wc.1sz(true.d, ns[i])
+  wc <- wincurse.sim.1sz(n = ns[i], nsim = 10000, d = true.d)
   est.ds[i] <- wc[2]
   pows[i] <- wc[3]
 }
@@ -1127,7 +1134,8 @@ plot(ns, est.ds, type = "l", lty = 2, lwd = 2, ylim = c(0, max(est.ds)), ylab = 
 lines(ns, rep(true.d, length(ns)), lwd = 2)
 legend("topright", lwd = c(2,2), lty = c(2,1), legend = c("Cursed", "True"))
 
-#Second Plot: Size of the winner's curse effect as a function of #power.
+#Second Plot: Size of the winner's curse effect as a function of 
+#power.
 curse.size <- est.ds - true.d
 plot(pows, curse.size, type = "l", lwd = 2, xlab = "Power", ylab = "Size of Winner's Curse Effect")
 
@@ -1250,25 +1258,6 @@ mean(x^8)
 #The estimates I obtained were close to the true values, which 
 #are "E(X^4)=3, E(X^5 )=0, "E(X^6 )=15, E(X^7 )=0, and E(X^8 )=105. 
 
-##############################
-##############################
-##############################
-#Exercise set 8-3
-
-#Problem 1)
-#The following R code simulates a sample of m independent Binomial(n,p) 
-#observations and estimates n and p shown in the main text. 
-#Increasing the value of m produces estimates closer to the true values. 
-#When m=10^7, for example, the estimates are very close to the true values.
-
-m <- 10000
-n <- 50
-p <- 0.3
-x <- rbinom(m, n, p)
-n.est <- ((sum(x)/m)^2)/((sum(x)/m)^2 + sum(x)/m - sum(x^2)/m)
-p.est <- ((sum(x)/m)^2 + sum(x)/m - sum(x^2)/m)/(sum(x)/m)
-n.est
-p.est
 
 ##############################
 ##############################
@@ -1340,16 +1329,15 @@ wrap.bm(1000, 5000, FUN = midrange)
 
 #Problem 2)
 
-mean(sim.perm.B(0, 0, n = 10) < .05)
-mean(sim.perm.B(0, 0.1, n = 10) < .05)
-mean(sim.perm.B(0, 0.2, n = 10) < .05)
-mean(sim.perm.B(0, 0, n = 50) < .05)
-mean(sim.perm.B(0, 0.1, n = 50) < .05)
-mean(sim.perm.B(0, 0.2, n = 50) < .05)
-mean(sim.perm.B(0, 0, n = 100) < .05)
-mean(sim.perm.B(0, 0.1, n = 100) < .05)
-mean(sim.perm.B(0, 0.2, n = 100) < .05)
-
+mean(sim.perm.B(n = 10, nsim = 500, a = 0, b = 0) < .05)
+mean(sim.perm.B(n = 10, nsim = 500, a = 0, b = 0.1) < .05)
+mean(sim.perm.B(n = 10, nsim = 500, a = 0, b = 0.2) < .05)
+mean(sim.perm.B(n = 50, nsim = 500, a = 0, b = 0) < .05)
+mean(sim.perm.B(n = 50, nsim = 500, a = 0, b = 0.1) < .05)
+mean(sim.perm.B(n = 50, nsim = 500, a = 0, b = 0.2) < .05)
+mean(sim.perm.B(n = 100, nsim = 500, a = 0, b = 0) < .05)
+mean(sim.perm.B(n = 100, nsim = 500, a = 0, b = 0.1) < .05)
+mean(sim.perm.B(n = 100, nsim = 500, a = 0, b = 0.2) < .05)
 
 ##############################
 ##############################
@@ -1419,28 +1407,28 @@ wald.stat.slr(anscombe$x1, anscombe$y1, 0)
 summary(lm(y1 ~ x1, data = anscombe))
 
 #Problem 3)
+mean(sim.Wald.B(n = 10, nsim = 500, a = 0, b = 0) < .05)
+mean(sim.Wald.B(n = 10, nsim = 500, a = 0, b = 0.1) < .05)
+mean(sim.Wald.B(n = 10, nsim = 500, a = 0, b = 0.2) < .05)
+mean(sim.Wald.B(n = 50, nsim = 500, a = 0, b = 0) < .05)
+mean(sim.Wald.B(n = 50, nsim = 500, a = 0, b = 0.1) < .05)
+mean(sim.Wald.B(n = 50, nsim = 500, a = 0, b = 0.2) < .05)
+mean(sim.Wald.B(n = 100, nsim = 500, a = 0, b = 0) < .05)
+mean(sim.Wald.B(n = 100, nsim = 500, a = 0, b = 0.1) < .05)
+mean(sim.Wald.B(n = 100, nsim = 500, a = 0, b = 0.2) < .05)
 
-mean(sim.Wald.B(0, 0, n = 10) < .05)
-mean(sim.Wald.B(0, 0.1, n = 10) < .05)
-mean(sim.Wald.B(0, 0.2, n = 10) < .05)
-mean(sim.Wald.B(0, 0, n = 50) < .05)
-mean(sim.Wald.B(0, 0.1, n = 50) < .05)
-mean(sim.Wald.B(0, 0.2, n = 50) < .05)
-mean(sim.Wald.B(0, 0, n = 100) < .05)
-mean(sim.Wald.B(0, 0.1, n = 100) < .05)
-mean(sim.Wald.B(0, 0.2, n = 100) < .05)
 
 #For fun, here's what happens when you compare the Wald statistic to
 #the appropriate t distribution instead of a standard normal
-mean(sim.Wald.B(0, 0, n = 10, pfun = pt, df = 8) < .05)
-mean(sim.Wald.B(0, 0.1, n = 10, pfun = pt, df = 8) < .05)
-mean(sim.Wald.B(0, 0.2, n = 10, pfun = pt, df = 8) < .05)
-mean(sim.Wald.B(0, 0, n = 50, pfun = pt, df = 48) < .05)
-mean(sim.Wald.B(0, 0.1, n = 50, pfun = pt, df = 48) < .05)
-mean(sim.Wald.B(0, 0.2, n = 50, pfun = pt, df = 48) < .05)
-mean(sim.Wald.B(0, 0, n = 100, pfun = pt, df = 98) < .05)
-mean(sim.Wald.B(0, 0.1, n = 100, pfun = pt, df = 98) < .05)
-mean(sim.Wald.B(0, 0.2, n = 100, pfun = pt, df = 98) < .05)
+mean(sim.Wald.B(n = 10, nsim = 500, a = 0, b = 0, pfun = pt, df = 8) < .05)
+mean(sim.Wald.B(n = 10, nsim = 500, a = 0, b = 0.1, pfun = pt, df = 8) < .05)
+mean(sim.Wald.B(n = 10, nsim = 500, a = 0, b = 0.2, pfun = pt, df = 8) < .05)
+mean(sim.Wald.B(n = 50, nsim = 500, a = 0, b = 0, pfun = pt, df = 48) < .05)
+mean(sim.Wald.B(n = 50, nsim = 500, a = 0, b = 0.1, pfun = pt, df = 48) < .05)
+mean(sim.Wald.B(n = 50, nsim = 500, a = 0, b = 0.2, pfun = pt, df = 48) < .05)
+mean(sim.Wald.B(n = 100, nsim = 500, a = 0, b = 0, pfun = pt, df = 98) < .05)
+mean(sim.Wald.B(n = 100, nsim = 500, a = 0, b = 0.1, pfun = pt, df = 98) < .05)
+mean(sim.Wald.B(n = 100, nsim = 500, a = 0, b = 0.2, pfun = pt, df = 98) < .05)
 
 
 ##############################
@@ -1477,7 +1465,7 @@ lr.stat.slr(anscombe$x1, anscombe$y1)
 
 #Problem 1)
 
-#To begin, let's set some parameters and simulate data weâ€™ll use in parts (a-c).
+#To begin, let's set some parameters and simulate data we'll use in parts (a-c).
 
 n <- 20
 true.mean <- 2
@@ -1528,11 +1516,11 @@ sd(rsamps)
 
 #Get 1 sample under rejection sampling from normal with known sd.
 #z is a vector of data.
-#get.1.samp.norm <- function(z, known.sd = 1, prior.mn = 0, prior.sd = 1){
+#get.1.samp.norm <- function(z, known.sd = 1, prior.mean = 0, prior.sd = 1){
 #  accepted <- FALSE
 #  max.like <- exp(sum(log(dnorm(z, mean = mean(z), sd = known.sd))))
 #  while(accepted == FALSE){
-#    cand <- rnorm(1, prior.mn, prior.sd)
+#    cand <- rnorm(1, prior.mean, prior.sd)
 #    like <- exp(sum(log(dnorm(z, mean = cand, sd = known.sd))))
 #    crit <- like / max.like
 #    xunif <- runif(1,0,1)
@@ -1542,10 +1530,10 @@ sd(rsamps)
 #}
 
 #Wrapper for get.1.samp.norm() that gets rejection sample from posterior of desired size.
-#reject.samp.norm <- function(z, known.sd = 1, prior.mn = 0, prior.sd = 1, nsamps = 10000){
+#reject.samp.norm <- function(z, known.sd = 1, prior.mean = 0, prior.sd = 1, nsamps = 10000){
 #  samps <- numeric(nsamps)
 #  for(i in seq_along(samps)){
-#    samps[i] <- get.1.samp.norm(z, known.sd, prior.mn, prior.sd)
+#    samps[i] <- get.1.samp.norm(z, known.sd, prior.mean, prior.sd)
 #  }
 #  samps
 #}
@@ -1600,7 +1588,7 @@ plot(reg32)
 summary(reg33)
 plot(reg33)
 
-#When prior precision is lowâ€”meaning that prior variance is highâ€”then 
+#When prior precision is low—meaning that prior variance is high—then 
 #the prior means are not especially important; these three choices 
 #lead to similar conclusions. If the prior precision is higher, 
 #then the prior means matter much more, and estimates are generally 
@@ -1667,7 +1655,7 @@ summary(BayesFactor(reg1, reg0))
 #Some relevant outputs are: 
 #  Intercept under H_1: posterior mean of 2.97, 95% credible interval [0.48, 5.52]
 #Slope under H_1: posterior mean of 0.50, 95% credible interval [0.23, 0.77]
-#Bayes factor B_10: 3.26. By Kass & Rafteryâ€™s scale, this is positive evidence for H_1 over H_0.  
+#Bayes factor B_10: 3.26. By Kass & Raftery’s scale, this is positive evidence for H_1 over H_0.  
 
 #b) Here is the code:
   
@@ -1680,7 +1668,7 @@ summary(BayesFactor(reg11, reg01))
 #Some relevant outputs are: 
 #  Intercept under H_1: posterior mean of 2.76, 95% credible interval [0.33, 5.13]
 #Slope under H_1: posterior mean of 0.52, 95% credible interval [0.27, 0.78]
-#Bayes factor B_10: 26.9. By Kass & Rafteryâ€™s scale, this is strong evidence for H_1 over H_0.  
+#Bayes factor B_10: 26.9. By Kass & Raftery’s scale, this is strong evidence for H_1 over H_0.  
 
 #c) Here is the code:
   
@@ -1881,6 +1869,24 @@ summary(prob.fit)
 #presence of heteroskedasticity for the disturbances of the latent variable.
 #This is in contrast to the linear regression case, where heteroskedasticity
 #can cause inefficiency but the estimators remain consistent.
+
+#c) 
+plot(sim.lm(5000, 3, 1/2, het.coef = .25))
+
+ests <- sim.lm.ests(n = 10, nsim = 1000, a = 3, b = 1/2, het.coef = .25)
+hist(ests[,2])
+colMeans(ests)
+apply(ests, 2, var)
+ests <- sim.lm.ests(n = 50, nsim = 1000, a = 3, b = 1/2, het.coef = .25)
+colMeans(ests)
+apply(ests, 2, var)
+ests <- sim.lm.ests(n = 100, nsim = 1000, a = 3, b = 1/2, het.coef = .25)
+colMeans(ests)
+apply(ests, 2, var)
+ests <- sim.lm.ests(n = 1000, nsim = 1000, a = 3, b = 1/2, het.coef = .25)
+colMeans(ests)
+apply(ests, 2, var)
+
 
 ##############################
 ##############################

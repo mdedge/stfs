@@ -132,25 +132,6 @@ mean(x^8)
 #The estimates I obtained were close to the true values, which 
 #are "E(X^4)=3, E(X^5 )=0, "E(X^6 )=15, E(X^7 )=0, and E(X^8 )=105. 
 
-##############################
-##############################
-##############################
-#Exercise set 8-3
-
-#Problem 1)
-#The following R code simulates a sample of m independent Binomial(n,p) 
-#observations and estimates n and p shown in the main text. 
-#Increasing the value of m produces estimates closer to the true values. 
-#When m=10^7, for example, the estimates are very close to the true values.
-
-m <- 10000
-n <- 50
-p <- 0.3
-x <- rbinom(m, n, p)
-n.est <- ((sum(x)/m)^2)/((sum(x)/m)^2 + sum(x)/m - sum(x^2)/m)
-p.est <- ((sum(x)/m)^2 + sum(x)/m - sum(x^2)/m)/(sum(x)/m)
-n.est
-p.est
 
 ##############################
 ##############################
@@ -222,12 +203,12 @@ wrap.bm(1000, 5000, FUN = midrange)
 
 #Problem 2)
 
-mean(sim.perm.B(0, 0, n = 10) < .05)
-mean(sim.perm.B(0, 0.1, n = 10) < .05)
-mean(sim.perm.B(0, 0.2, n = 10) < .05)
-mean(sim.perm.B(0, 0, n = 50) < .05)
-mean(sim.perm.B(0, 0.1, n = 50) < .05)
-mean(sim.perm.B(0, 0.2, n = 50) < .05)
-mean(sim.perm.B(0, 0, n = 100) < .05)
-mean(sim.perm.B(0, 0.1, n = 100) < .05)
-mean(sim.perm.B(0, 0.2, n = 100) < .05)
+mean(sim.perm.B(n = 10, nsim = 500, a = 0, b = 0) < .05)
+mean(sim.perm.B(n = 10, nsim = 500, a = 0, b = 0.1) < .05)
+mean(sim.perm.B(n = 10, nsim = 500, a = 0, b = 0.2) < .05)
+mean(sim.perm.B(n = 50, nsim = 500, a = 0, b = 0) < .05)
+mean(sim.perm.B(n = 50, nsim = 500, a = 0, b = 0.1) < .05)
+mean(sim.perm.B(n = 50, nsim = 500, a = 0, b = 0.2) < .05)
+mean(sim.perm.B(n = 100, nsim = 500, a = 0, b = 0) < .05)
+mean(sim.perm.B(n = 100, nsim = 500, a = 0, b = 0.1) < .05)
+mean(sim.perm.B(n = 100, nsim = 500, a = 0, b = 0.2) < .05)

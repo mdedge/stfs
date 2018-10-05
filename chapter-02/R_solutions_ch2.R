@@ -52,13 +52,3 @@ if(!("gpairs" %in% installed.packages())){
 library(gpairs) #load the package
 gpairs(iris, scatter.pars = list(col = as.numeric(iris$Species)))
 
-
-#Problem 3
-
-#To install and load stfspack, use
-install.packages("devtools")
-library(devtools) 
-#Next, install and load the package.
-install_github("mdedge/stfspack")
-library(stfspack)
-

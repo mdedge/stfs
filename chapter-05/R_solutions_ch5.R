@@ -2,6 +2,18 @@
 #Code to complete R exercises in Statistical Thinking from 
 #Scratch, chapter 5.
 
+#Some of the solutions below require functions that are contained
+#in the book's package. Code for the functions is at
+#github.com/mdedge/stfs
+#To install and load the package stfspack, run the following:
+
+#First, get devtools, which allows installation from github
+if(!("devtools" %in% installed.packages())){install.packages("devtools")}
+library(devtools) 
+#Next, install and load the package.
+if(!("stfspack" %in% installed.packages())){install_github("mdedge/stfspack")}
+library(stfspack)
+
 #############################################
 #Exercise Set 5-1
 #Problem 2
@@ -15,6 +27,9 @@ samps <- rnorm(samp.size*n.samps, mean = 0, sd = 1) #draw samples
 samp.mat <- matrix(samps, ncol = n.samps) #organize samples into a matrix
 samp.means <- colMeans(samp.mat) #take the mean of each column
 hist(samp.means)
+
+#The mat.samps() function in stfspack also does the step of reformatting
+#as a matrix.
 
 #If you increase the samp.size variable from 20 to larger numbers,
 #you will see that the means become more tightly clustered
@@ -65,12 +80,12 @@ lln.hist.exp(1000, 1000)
 #the normal distribution. No observations smaller than 0 are allowed. When 
 #the expected value is set to 1, most of the observations are near 0, and 
 #the observations trail off far to the right. We say the distribution is 
-#“skewed right.” Again, when we take means of samples, we find that the 
+#skewed right. Again, when we take means of samples, we find that the 
 #sample means get closer to the expectation as the sample size increases. 
 #You ought to notice something odd here, though. The sample means cluster 
 #more tightly around the expectation as the sample size grows, but the 
 #shape of the distribution also changes. Namely, it starts to look more 
-#symmetric and bell-like—more normal. This is a preview of the central 
+#symmetric and bell-like, more normal. This is a preview of the central 
 #limit theorem, which will appear soon.
 
 
@@ -93,23 +108,6 @@ ani.options(nmax = nball + nlayer - 2, interval = 1/rate)
 #quincunx(balls = nball, layers = nlayer)
 
 # Problem 2) 
-
-#Function that simulates a specified number of samples of a specified
-#size from the beta distribution and plots the distribution of 
-#sample means.
-#shape1 and shape2 are parameters of the beta distribution.
-dosm.beta.hist <- function(samp.size, n.samps, shape1 = 1, shape2 = 1, ...){
-  #simulate the samples.
-  samps <- rbeta(samp.size*n.samps, shape1, shape2)
-  #reorganize into a matrix
-  sim.mat <- matrix(samps, nrow = n.samps)
-  #find the mean of each sample, plot it on a histogram
-  dosm <- rowMeans(sim.mat)
-  hist(dosm, freq=FALSE, xlab = "Distribution of the sample mean", ...)#freq=FALSE re-scales the height
-  #Draw a normal density for comparison.
-  x <- seq(0,1,length.out = 1000)
-  lines(x, dnorm(x, mean = mean(dosm), sd = sd(dosm)))
-}
 
 #Here's a set of plots for the parameter set (1,1)
 dosm.beta.hist(1, 10000, shape1 = 1, shape2 =  1)
@@ -140,7 +138,7 @@ dosm.beta.hist(50, 10000, shape1 = s.pars[1], shape2 =  s.pars[2])
 #With the parameters and sample size requested, the distribution of sample means 
 #is a good fit to the normal only within about 2 standard deviations of the 
 #expectation. Beyond that, the Pareto sample mean distribution has much heavier 
-#tails than the normal---extreme observations are much more likely than normal 
+#tails than the normal—extreme observations are much more likely than normal 
 #theory predicts. For example, there are about 100 times as many observations 
 #beyond 5 standard deviations from the expectation as would be predicted by the 
 #normal distribution, and there are thousands of times as many observations 
@@ -159,13 +157,8 @@ n.sim <- 100000
 #CLT applies, if a > 2. For large a, convergence to 
 #normal is better. With small a, convergence is slow,
 #especially in the tails.
-a <- 3
+a <- 4
 b <- 1
-
-#Functions to simulate data from Pareto distribution.
-#You can also get these from the rmutil package.
-qpareto <- function(u, a=0.5, b=1){b/(1-u)^(1/a)}
-rpareto <- function(n, a=0.5, b=1){qpareto(runif(n),a,b)}
 
 #Compute the expectation and variance of the distribution
 #of the sample mean. a must be above 2 for these expressions
@@ -182,23 +175,6 @@ means.sim <- rowMeans(sim)
 #normal pdf that follows from the CLT.
 hist(means.sim, prob = TRUE)
 curve(dnorm(x, expec.par, sd.mean), add = TRUE)
-
-#Quotient compares proportion of observed sample means beyond 
-#k deviations(numerator) with probability of being beyond k
-#standard deviations away from expectation if the distribution
-#is normal. Numbers close to 1 indicate that the proportion of
-#means within k standard deviations is close to normal
-#expectation. (You will see in ch. 7 that we would usually call
-#the standard deviation of a mean a "standard error.") 
-#Numbers greater than 1 indicate that there are more sample 
-#means beyond k standard deviations away from the expectation
-#than expected.
-#x is a vector of means, k is a number of standard deviations,
-#expec is the expected value of the sample means, sd.mean is the
-#standard deviation of the sample means. 
-compare.tail.to.normal <- function(x, k, expec, sd.mean){
-  mean(x < (expec - k* sd.mean) | x > (expec + k* sd.mean))/(1 - (pnorm(k) - pnorm(-k)))
-}
 
 compare.tail.to.normal(means.sim, 1/2, expec.par, sd.mean)
 compare.tail.to.normal(means.sim, 1, expec.par, sd.mean)
@@ -220,13 +196,17 @@ compare.tail.to.normal(means.sim, 6, expec.par, sd.mean)
 #b is the slope.
 #var.eps is the variance of the disturbances, which are drawn from a
 #normal distribution with expectation 0.
-sim.lm <- function(a, b, var.eps = 1, n = 50, mu.x = 8, var.x = 4, rx = rnorm, rdist = rnorm){
-  x <- sort(rx(n, mu.x, sqrt(var.x)))
-  disturbs <- rdist(n, 0, sqrt(var.eps))
-  y <- a + b*x + disturbs
-  cbind(x,y)
-}
+sim <- sim.lm(n = 100, a = 3, b = .5)
+plot(sim)
+abline(3, 1/2) #draw the E(Y|x) line
 
-sim_0_1 <- sim.lm(a = 0, b = 1)
-plot(sim_0_1[,1], sim_0_1[,2])
-abline(0,1) #draw the E(Y|x) line
+#Draw disturbances from a Laplace distribution (if stfspack is loaded)
+sim <- sim.lm(n = 100, a = 3, b = .5, rdist = rlaplace)
+plot(sim)
+abline(3, 1/2) #draw the E(Y|x) line
+
+#Make the standard deviation of the disturbances increase linearly with x
+sim <- sim.lm(n = 100, a = 3, b = .5, het.coef = .2)
+plot(sim)
+abline(3, 1/2) #draw the E(Y|x) line
+

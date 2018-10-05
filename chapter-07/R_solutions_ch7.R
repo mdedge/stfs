@@ -20,7 +20,7 @@ library(stfspack)
 #Exercise Set 7-1
 #Problem 1)
 #d) 
-s.mat <- norm.samps(0, 1, 25, 10000)
+s.mat <- mat.samps(n = 25, nsim =10000)
 ests.median <- apply(s.mat, 1, median)
 
 #Heres the new part:
@@ -68,10 +68,10 @@ polygon(c(-z.a2, x.zs, z.a2), c(0, fx.zs, 0), col = "grey", border = FALSE)
 #2d)
 
 #To simulate the means of 10,000 samples of size four, we have two options. 
-#We can either simulate the samples (here, storing them in a matrix) 
+#We can either simulate the samples (here, using the mat.samps function from stfspack) 
 #and take their means:
 
-sim.mat <- matrix(rnorm(40000, mean = 100, sd = 2), ncol = 4, 	nrow = 10000)
+sim.mat <- mat.samps(n = 4, nsim = 10000, rx = rnorm, 100, 2)
 sim.means <- rowMeans(sim.mat)
 
 #Or we can simulate the means directly, remembering that the means 
@@ -109,7 +109,7 @@ mean(ps < 0.1)
 #2e) To simulate normal samples of size 4 from a NOrmal(101,4) distribution 
 #and test the null hypothesis that mu=100, use the following:
 
-sim.mat <- matrix(rnorm(40000, mean = 101, sd = 2), ncol = 4, 	nrow = 10000)
+sim.mat <- mat.samps(n = 4, nsim = 10000, rx = rnorm, 101, 2)
 sim.means <- rowMeans(sim.mat)
 ps <- sapply(sim.means, FUN = twotailed.p.normal, mu = 100, 	stand.err = 1)
 
@@ -125,7 +125,7 @@ mean(ps < 0.1)
 #2f) To simulate normal samples of size 4 from a NOrmal(102,4) distribution and 
 #test the null hypothesis that mu=100, use the following:
 
-sim.mat <- matrix(rnorm(40000, mean = 102, sd = 2), ncol = 4, 	nrow = 10000)
+sim.mat <- mat.samps(n = 4, nsim = 10000, rx = rnorm, 102, 2)
 sim.means <- rowMeans(sim.mat)
 ps <- sapply(sim.means, FUN = twotailed.p.normal, mu = 100, 	stand.err = 1)
 
@@ -139,7 +139,7 @@ mean(ps < 0.1)
 #2g) To simulate normal samples of size 16 from a Normal(101,4) distribution and 
 #test the null hypothesis that mu=100, use the following:
 
-sim.mat <- matrix(rnorm(160000, mean = 101, sd = 2), ncol = 16, 	nrow = 10000)
+sim.mat <- mat.samps(n = 16, nsim = 10000, rx = rnorm, 101, 2)
 sim.means <- rowMeans(sim.mat)
 ps <- sapply(sim.means, FUN = twotailed.p.normal, mu = 100, 	stand.err = 1/2)
 
@@ -158,26 +158,26 @@ mean(ps < 0.1)
 ##############################
 ##############################
 ##############################
-#Exercise Set 7-4
+#Exercise Set 7-5
 
-#Problem 2)
+#Problem 1)
 #a)
 
 library(MASS)
 
-ps <- many.outcome.sim(20, 3, .7, 10000)
+ps <- many.outcome.sim(n = 20, nsim = 10000, n.dv = 7, correl = .7)
 sigs <- ps < .05 #Which entries are significant?
 colMeans(sigs) # proportion of tests that were significant for each measurement.
 mean(rowMeans(sigs) > 0) #significant result for at least one of the measurements.
 
 #b) Here are a couple of other possibilities:
 
-ps <- many.outcome.sim(20, 10, .7, 10000)
+ps <- many.outcome.sim(n = 20, nsim = 10000, n.dv = 20, correl = .7)
 sigs <- ps < .05 #Which entries are significant?
 colMeans(sigs) # proportion of tests that were significant for each measurement.
 mean(rowMeans(sigs) > 0) #significant result for at least one of the measurements.
 
-ps <- many.outcome.sim(20, 3, .1, 10000)
+ps <- many.outcome.sim(n = 20, nsim = 10000, n.dv = 7, correl = .1)
 sigs <- ps < .05 #Which entries are significant?
 colMeans(sigs) # proportion of tests that were significant for each measurement.
 mean(rowMeans(sigs) > 0) #significant result for at least one of the measurements.
@@ -186,13 +186,20 @@ mean(rowMeans(sigs) > 0) #significant result for at least one of the measurement
 #the probability that at least one of the tests will produce a type I error,
 #also called the familywise error rate.
 
-#Problem 3)
+#Problem 2)
 
-ps <- serial.testing.sim()
+ps <- serial.testing.sim(ns = c(10, 20, 30, 40, 50))
 
 sigs <- ps < .05 #Which entries are significant?
-colMeans(sigs) # proportion of tests that were significant for each measurement.
-mean(rowMeans(sigs) > 0) #significant result for at least one of the measurements.
+colMeans(sigs) # proportion of tests that were significant at each stopping point.
+mean(rowMeans(sigs) > 0) #significant result for at least one stopping point.
+
+ps <- serial.testing.sim(ns = c(10, 20, 30, 40, 50, 60, 70, 80, 90, 100))
+
+sigs <- ps < .05 #Which entries are significant?
+colMeans(sigs) # proportion of tests that were significant at each stopping point.
+mean(rowMeans(sigs) > 0) #significant result for at least one stopping point.
+
 
 #The proposed procedure leads to an incorrect rejection of the null 
 #hypothesis about 11-12% of the time, which grows worse with more repeated testing. 
@@ -201,28 +208,28 @@ mean(rowMeans(sigs) > 0) #significant result for at least one of the measurement
 ##############################
 ##############################
 ##############################
-#Exercise set 7-5
+#Exercise set 7-6
 
 #1)
 
 #The following block of code provides one way to produce the necessary plot, 
-#assuming that the ps.1sz() function is defined:
+#assuming that the power.sim.1sz() function is defined:
 
 n <- 25
 d <- seq(-2, 2, length.out = 101)
 pow <- numeric(length(d))
 for(i in 1:length(d)){
-  pow[i] <- ps.1sz(d[i], n)
+  pow[i] <- power.sim.1sz(n = n, nsim = 1000, d[i])
 }
 plot(d, pow, ylim = c(0,1), type = "l", ylab = "Power")
 
 #2)
 # few possible parameter choices.
-wc.1sz( .3, 50, .05) 
-wc.1sz( .5, 50, .05) 
-wc.1sz( .1, 50, .05) 
-wc.1sz( .3, 25, .05) 
-wc.1sz( .3, 50, .01)
+wincurse.sim.1sz(n = 50, nsim = 10000, d = .3)
+wincurse.sim.1sz(n = 100, nsim = 10000, d = .3)
+wincurse.sim.1sz(n = 25, nsim = 10000, d = .3)
+wincurse.sim.1sz(n = 50, nsim = 10000, d = .1)
+wincurse.sim.1sz(n = 50, nsim = 10000, d = .3, lev = .01)
 
 #b)
 
@@ -233,7 +240,7 @@ est.ds <- numeric(length(ns))
 
 #Save power and estimated effect sizes.
 for(i in 1:length(ns)){
-  wc <- wc.1sz(true.d, ns[i])
+  wc <- wincurse.sim.1sz(n = ns[i], nsim = 10000, d = true.d)
   est.ds[i] <- wc[2]
   pows[i] <- wc[3]
 }
@@ -243,7 +250,7 @@ plot(ns, est.ds, type = "l", lty = 2, lwd = 2, ylim = c(0, max(est.ds)), ylab = 
 lines(ns, rep(true.d, length(ns)), lwd = 2)
 legend("topright", lwd = c(2,2), lty = c(2,1), legend = c("Cursed", "True"))
 
-#Second Plot: Size of the winner's curse effect as a function of #power.
+#Second Plot: Size of the winner's curse effect as a function of 
+#power.
 curse.size <- est.ds - true.d
 plot(pows, curse.size, type = "l", lwd = 2, xlab = "Power", ylab = "Size of Winner's Curse Effect")
-

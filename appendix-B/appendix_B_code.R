@@ -1,5 +1,5 @@
 #9/7/16, by Doc Edge
-#Appendix B code from Statistical Thinking from Scratch
+#Appendix B code from How Statistics Works
 
 #Covers variables, data structures (vectors, matrices, data frames,
 # lists) data creation, logic, subsetting, 
