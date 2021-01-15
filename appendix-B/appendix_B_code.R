@@ -26,7 +26,7 @@ z <- c(TRUE, TRUE, FALSE, FALSE)
 
 
 #Other useful commands for creating vectors
-#include seq() and the color operator :, as in seq(10,13,1); 10:13
+#include seq() and the colon operator :, as in seq(10,13,1); 10:13
 
 #Subsetting vectors
 x[3] #use index
@@ -293,8 +293,8 @@ mat <- matrix(rnorm(10^6), nrow = 2*10^5)
 #Function that uses a for() loop to compute row means.
 for.rowmeans<- function(x){
   rms <- numeric(nrow(x))
-  for(i in nrow(x)){
-    rms[i] <- median(x[i,])
+  for(i in 1:nrow(x)){
+    rms[i] <- mean(x[i,])
   }
   rms
 }
